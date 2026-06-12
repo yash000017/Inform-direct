@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK CoSec Platform — Full Product Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0A0E14; --bg2: #121820; --bg3: #1A2230; --bg4: #222C3C;
+  --border: #2D3A4D; --text: #E8EDF4; --text2: #94A3B8; --text3: #64748B;
+  --accent: #38BDF8; --accent-dim: #0C4A6E;
+  --green: #34D399; --green-dim: #064E3B;
+  --amber: #FBBF24; --amber-dim: #78350F;
+  --purple: #A78BFA; --purple-dim: #4C1D95;
+  --coral: #FB7185; --coral-dim: #881337;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scrollbar-color: #3D4F66 var(--bg); scrollbar-width: thin; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #3D4F66; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4A6078; }
+::-webkit-scrollbar-corner { background: transparent; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  height: 56px; display: grid; grid-template-columns: 220px minmax(0, 1fr);
+  position: sticky; top: 0; z-index: 200;
+}
+.header-brand {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 0.75rem 0 1.25rem;
+  border-right: 1px solid var(--border);
+  min-width: 0;
+}
+.logo-icon {
+  width: 28px; height: 28px; flex-shrink: 0;
+  background: var(--accent-dim); border-radius: 7px;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.logo-text {
+  font-size: 13px; font-weight: 700; line-height: 1.2;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.logo-badge {
+  flex-shrink: 0; font-size: 9px; font-weight: 600;
+  background: var(--green-dim); color: var(--green); border: 1px solid var(--green);
+  padding: 2px 6px; border-radius: 10px; line-height: 1.3;
+}
+.nav-links {
+  display: flex; align-items: center; justify-content: flex-end; gap: 16px;
+  font-size: 13px; padding: 0 1.5rem;
+}
+.nav-links a { color: var(--text2); }
+.nav-links a:hover { color: var(--accent); text-decoration: none; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  width: 100%;
+  min-height: calc(100vh - 56px);
+}
+.sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 1rem 0;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #3D4F66 transparent;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: #2D3A4D; border-radius: 4px; }
+.sidebar::-webkit-scrollbar-thumb:hover { background: #4A6078; }
+.sidebar-title { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; padding: 0 1.25rem 8px; }
+.side-link {
+  display: block; padding: 7px 1.25rem; font-size: 13px; color: var(--text2);
+  border-left: 2px solid transparent; cursor: pointer;
+}
+.side-link:hover, .side-link.active { color: var(--accent); background: rgba(56,189,248,0.06); border-left-color: var(--accent); }
+
+.main {
+  padding: 1.25rem 1.5rem 3rem 1.25rem;
+  overflow-x: hidden;
+  min-width: 0;
+  width: 100%;
+}
+.hero { margin-bottom: 2rem; }
+.hero h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero p { color: var(--text2); font-size: 14px; max-width: 900px; }
+.hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.pill { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text2); }
+.pill.new { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.pill.better { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+
+.stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 1.5rem 0 2rem; }
+.stat-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; }
+.stat-num { font-size: 22px; font-weight: 700; color: var(--accent); }
+.stat-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.section { margin-bottom: 2.5rem; scroll-margin-top: 70px; }
+.section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.section-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.section-head h2 { font-size: 18px; font-weight: 700; }
+.section-head span { font-size: 12px; color: var(--text3); margin-left: auto; }
+
+.module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.module-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px; transition: border-color 0.15s;
+}
+.module-card:hover { border-color: var(--accent); }
+.module-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.module-card p { font-size: 12px; color: var(--text2); line-height: 1.55; margin-bottom: 10px; }
+.tag { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+.tag.mvp { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.tag.p2 { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+.tag.p3 { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple); }
+.tag.new { background: var(--coral-dim); color: var(--coral); border: 1px solid var(--coral); }
+.tag.id { background: var(--bg3); color: var(--text3); border: 1px solid var(--border); }
+
+.tech-list { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 8px; }
+.feat-list { list-style: none; font-size: 12px; color: var(--text2); }
+.feat-list li { padding: 3px 0 3px 16px; position: relative; }
+.feat-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 10px; top: 4px; }
+.feat-list li.plus::before { content: '+'; color: var(--green); font-weight: 700; }
+.feat-list li.gap::before { content: '◆'; color: var(--coral); }
+
+.arch-box {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.25rem; font-family: var(--mono); font-size: 11px; color: var(--text2);
+  line-height: 1.7; overflow-x: auto; white-space: pre; margin: 1rem 0;
+}
+.phase-timeline { display: flex; flex-direction: column; gap: 12px; }
+.phase {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 18px; border-left: 3px solid var(--accent);
+}
+.phase h3 { font-size: 14px; margin-bottom: 6px; }
+.phase p { font-size: 12px; color: var(--text2); }
+.phase ul { margin: 8px 0 0 18px; font-size: 12px; color: var(--text2); }
+
+.compare-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #3D4F66 var(--bg2);
+}
+.compare-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.compare-table th, .compare-table td { border: none; border-bottom: 1px solid var(--border); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table th, .compare-table td { padding: 10px 12px; text-align: left; vertical-align: top; }
+.compare-table th { background: var(--bg3); color: var(--text); font-weight: 600; }
+.compare-table td { color: var(--text2); }
+.win { color: var(--green); font-weight: 600; }
+
+.search-bar {
+  width: 100%; max-width: 400px; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px; margin-bottom: 1rem;
+}
+.search-bar:focus { outline: none; border-color: var(--accent); }
+
+@media (max-width: 900px) {
+  .site-header { grid-template-columns: 1fr; height: auto; min-height: 56px; }
+  .header-brand { border-right: none; padding: 0.75rem 1rem; }
+  .nav-links { padding: 0 1rem 0.75rem; gap: 12px; font-size: 12px; flex-wrap: wrap; justify-content: flex-start; }
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-brand">
+    <div class="logo-icon">🏢</div>
+    <span class="logo-text">UK CoSec Platform</span>
+    <span class="logo-badge">v1</span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">← Feature Guide</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#compare">vs Inform Direct</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const BLUEPRINT = {
+  sections: [
+    {
+      id: 'vision',
+      icon: '🎯',
+      color: '#38BDF8',
+      title: 'Vision & Positioning',
+      subtitle: 'Build a CH-authorised platform that matches Inform Direct feature-for-feature, then wins on UX, API, HMRC depth, and fulfilment',
+      modules: [
+        {
+          name: 'Product vision',
+          phase: 'mvp',
+          tech: 'Strategy',
+          desc: 'All-in-one UK company secretarial SaaS for accountants, formations agents, and in-house teams. Companies House filings + registers + documents + deadlines + agent practice tools + optional physical fulfilment.',
+          features: [
+            'Parity with Inform Direct\'s 46 documented features',
+            'Close all 25+ gaps from Inform Direct Gaps tab (formation tiers, HMRC VAT link, strike-off, LLP, etc.)',
+            '+ Modern API-first architecture with webhooks',
+            '+ Unified deadline hub: CH + HMRC VAT + CT + custom',
+            '+ Real-time cap table & audit trail (better than PDF-only)',
+            '+ Client portal with e-signature on board minutes',
+          ],
+        },
+        {
+          name: 'Target users',
+          phase: 'mvp',
+          tech: 'GTM',
+          desc: 'Primary: accountancy practices (5–500 companies). Secondary: formation agents, company secretaries, startups self-managing.',
+          features: [
+            'PAYG solo founders (≤10 companies)',
+            'Subscription practices (unlimited cos, multi-user)',
+            'ACSP subscribers (ECCTA identity verification)',
+            'White-label reseller tier (Phase 2)',
+          ],
+        },
+      ],
+    },
+    {
+      id: 'infra',
+      icon: '☁️',
+      color: '#34D399',
+      title: 'Platform & Infrastructure',
+      subtitle: 'UK data residency, security, and scale from day one',
+      modules: [
+        {
+          name: 'Cloud hosting (UK)',
+          phase: 'mvp',
+          tech: 'AWS eu-west-2 (London) · VPC · ALB · ECS/Fargate or EKS',
+          desc: 'All customer data and documents stored in UK region. Multi-AZ for HA.',
+          features: ['Terraform/IaC', 'Auto-scaling app tier', 'RDS PostgreSQL Multi-AZ', 'ElastiCache Redis', 'S3 + KMS encryption', 'CloudFront CDN', 'WAF + Shield'],
+        },
+        {
+          name: 'Database & multi-tenancy',
+          phase: 'mvp',
+          tech: 'PostgreSQL 16 · row-level security · tenant_id on all tables',
+          desc: 'Single DB with strict tenant isolation. Every company-scoped row filtered by portfolio_access.',
+          features: ['UUID PKs', 'Encrypted columns (PII, residential addresses, personal codes)', 'Audit log table (immutable)', 'Soft deletes + 7yr retention', 'Read replicas for reporting'],
+        },
+        {
+          name: 'Background jobs',
+          phase: 'mvp',
+          tech: 'BullMQ + Redis · or AWS SQS + Lambda workers',
+          desc: 'Async work: CH filing poll, daily sync, PDF gen, email, virus scan, HMRC VAT sync.',
+          features: ['Retry with exponential backoff', 'Dead-letter queues', 'Cron: nightly CH sync', 'Idempotent job keys'],
+        },
+        {
+          name: 'Observability',
+          phase: 'mvp',
+          tech: 'CloudWatch · Sentry · structured JSON logs',
+          desc: 'Track CH API errors, filing success rate, latency, payment failures.',
+          features: ['Alerting on CH OAuth expiry', 'Filing failure dashboards', 'Per-tenant usage metrics'],
+        },
+        {
+          name: 'TLS & compliance',
+          phase: 'mvp',
+          tech: 'ACM certs · SOC2-ready controls · GDPR',
+          desc: '256-bit TLS, encryption at rest, DPIA for PII, right-to-erasure workflow.',
+          features: ['Pen test before launch', 'Data processing agreement', 'UK GDPR lawful basis docs'],
+        },
+      ],
+    },
+    {
+      id: 'auth',
+      icon: '🔐',
+      color: '#A78BFA',
+      title: 'Authentication & Access Control',
+      subtitle: 'From scratch — better than Inform Direct single-user PAYG limits',
+      modules: [
+        {
+          name: 'Identity provider',
+          phase: 'mvp',
+          tech: 'AWS Cognito User Pools · eu-west-2',
+          desc: 'Sign-up, sign-in, password reset, email verification. JWT access + refresh tokens for API.',
+          features: ['Email/password auth', 'Email verification on signup', 'Password policy + breach check', 'Account lockout after failed attempts', 'Session timeout configurable'],
+        },
+        {
+          name: 'Multi-factor authentication',
+          phase: 'mvp',
+          tech: 'Cognito MFA · TOTP default · Amazon SNS for SMS',
+          desc: 'Subscription includes 2FA (match Inform Direct). Enforce MFA for account admins.',
+          features: ['Authenticator app (TOTP) — no per-check fee', 'SMS OTP via SNS (~$0.04/SMS UK)', 'Admin can require MFA for all firm users', 'Recovery codes'],
+        },
+        {
+          name: 'RBAC & permissions',
+          phase: 'mvp',
+          tech: 'Custom middleware · portfolio_access table',
+          desc: 'Per-user, per-company roles. Subscription only for multi-user (match ID).',
+          features: ['Roles: owner, full, view-only, accounts-only', 'Middleware on every /api/companies/:id/* route', 'Client portal role (view own company only)', 'Permission change audit log'],
+        },
+        {
+          name: 'Invitations & onboarding',
+          phase: 'mvp',
+          tech: 'JWT signed invites · Amazon SES',
+          desc: 'Account owner invites colleagues/clients. 7-day expiring invite tokens.',
+          features: ['POST /api/invitations', 'Accept flow creates/links user', 'SES transactional email ($0.10/1k)', 'Welcome onboarding checklist'],
+        },
+        {
+          name: 'Enterprise SSO',
+          phase: 'p2',
+          tech: 'Cognito SAML · Azure AD / Okta',
+          desc: 'Differentiator for large practices — Inform Direct has no SSO.',
+          features: ['SAML 2.0 federation', 'SCIM user provisioning', 'Per-practice IdP config'],
+          tags: ['new'],
+        },
+        {
+          name: 'API authentication',
+          phase: 'p2',
+          tech: 'OAuth2 client credentials · API keys with scopes',
+          desc: 'Public API for practice management integrations.',
+          features: ['Scoped API keys per integration', 'Rate limits per tenant', 'Webhook HMAC signatures'],
+          tags: ['new'],
+        },
+      ],
+    },
+    {
+      id: 'billing',
+      icon: '💳',
+      color: '#FBBF24',
+      title: 'Billing & Commercial Engine',
+      subtitle: 'PAYG, subscription, formation packages, CH pass-through',
+      modules: [
+        {
+          name: 'Payment processing',
+          phase: 'mvp',
+          tech: 'Stripe Checkout · Stripe Billing',
+          desc: 'Collect PAYG per transaction and monthly subscriptions. VAT on platform fees.',
+          features: ['Card + Direct Debit', 'Stripe Tax for UK VAT', 'Invoices & receipts', 'Failed payment retry'],
+        },
+        {
+          name: 'PAYG metering',
+          phase: 'mvp',
+          tech: 'Internal ledger · Stripe metered or pre-auth',
+          desc: 'Charge before premium action executes. Max 10 companies on PAYG.',
+          features: ['CS £15+VAT', 'Dividends £10+VAT/share class', 'Dormant £25 · Micro £45', 'Templates £5 · Share reorg £40', 'Strike-off £9', 'Formation packages £100–£390+VAT'],
+        },
+        {
+          name: 'Subscription plans',
+          phase: 'mvp',
+          tech: 'Stripe Billing · company-count tiers',
+          desc: 'Monthly fee by portfolio size. Unlimited transactions, 400+ templates, branding, multi-user.',
+          features: ['Live portfolio count billing', '£10 discount on formation packages', 'Own CH presenter code', '250MB doc storage per company'],
+        },
+        {
+          name: 'CH fee pass-through',
+          phase: 'mvp',
+          tech: 'Presenter code · or ID-collected on PAYG',
+          desc: 'Incorporation £100, CS £50, charges £14 — separate from platform fee.',
+          features: ['Presenter code config (subscription)', 'PAYG: collect CH fees via Stripe', 'Fee breakdown on checkout', 'CH transaction receipt storage'],
+        },
+        {
+          name: 'Formation package checkout',
+          phase: 'p2',
+          tech: 'Product catalogue · fulfilment flags',
+          desc: 'Five tiers matching Inform Direct wizard + step-3 à la carte extras.',
+          features: ['Basic £100 · Printed £120 · Capital £175 · Professional £210 · Premium £390 (+VAT)', 'Step 3 add-ons catalogue', 'Physical fulfilment order queue', 'Partner voucher codes (domain, bank)'],
+          tags: ['gap'],
+        },
+      ],
+    },
+    {
+      id: 'ch-api',
+      icon: '🏛️',
+      color: '#60A5FA',
+      title: 'Companies House Integration Layer',
+      subtitle: 'Public API + Filing API + OAuth + sync',
+      modules: [
+        {
+          name: 'CH Public Data API',
+          phase: 'mvp',
+          tech: 'REST · API key · 600 req/5min',
+          desc: 'Name search, company profile import, officer/PSC fetch, daily sync.',
+          features: ['GET /search/companies', 'GET /company/{number}', 'GET /officers · /persons-with-significant-control', 'Rate limit queue'],
+        },
+        {
+          name: 'CH Filing API (OAuth2)',
+          phase: 'mvp',
+          tech: 'OAuth2 user auth · transaction polling',
+          desc: 'Submit IN01, AP, TM, PSC, CS01, AD, SH, AA, MR, DS, NM forms. Requires CH software authorisation (3–6 months).',
+          features: ['OAuth2 authorise + token exchange', 'POST /transactions', 'Poll transaction status', 'Store ch_transaction_id + receipts', 'Handle rejections + resubmit UX'],
+        },
+        {
+          name: 'CH Accounts Filing API',
+          phase: 'mvp',
+          tech: 'Structured JSON (free CH API) · iXBRL upload pass-through',
+          desc: 'Match Inform Direct: dormant + micro wizards via CH API (no paid iXBRL vendor). Full accounts = upload .html/.xhtml from client accounting software — we submit, we do not tag.',
+          features: ['Dormant accounts JSON — £0 API cost', 'Micro-entity balance sheet — £0 API cost', 'iXBRL upload + CH submit (subscription + presenter)', 'No Corefiling/Arkk unless we choose to generate tags later'],
+        },
+        {
+          name: 'Daily CH sync worker',
+          phase: 'mvp',
+          tech: 'BullMQ cron 2am · diff engine',
+          desc: 'Compare local DB vs CH. Flag fraud indicators (officer added at CH directly).',
+          features: ['Officer/PSC/address discrepancies', 'Status: active → dissolved', 'Email alert on HIGH severity', 'Sync history log'],
+        },
+        {
+          name: 'Presenter code management',
+          phase: 'mvp',
+          tech: 'Encrypted credential store',
+          desc: 'Subscription users file CH fees from own presenter account.',
+          features: ['Secure presenter code entry', 'Test connection', 'Per-filing fee preview', 'Statement reconciliation export'],
+          tags: ['gap'],
+        },
+      ],
+    },
+    {
+      id: 'hmrc',
+      icon: '📋',
+      color: '#FB7185',
+      title: 'HMRC Integration',
+      subtitle: 'NOT fully documented in Feature Guide — critical for agents',
+      modules: [
+        {
+          name: 'HMRC VAT date link (ASA)',
+          phase: 'mvp',
+          tech: 'HMRC MTD VAT API · Agent Services Account OAuth',
+          desc: 'Match Inform Direct Sept 2023 feature: read client VAT return due dates for portfolio reminders.',
+          features: ['Account → Link to HMRC → GOV.UK grant', 'ASA login + 2FA', 'Auto-pull VAT dates per client VAT number', 'Portfolio + email reminders', 'Remove link per account or per company'],
+          tags: ['gap', 'new'],
+        },
+        {
+          name: 'Corporation Tax (CT600)',
+          phase: 'p2',
+          tech: 'HMRC CT API · ASA · iXBRL accounts',
+          desc: 'File CT600 with accounts for users with presenter code. Inform Direct: subscription only.',
+          features: ['CT600 alongside accounts filing', 'HMRC Corporation Tax Gateway', 'Agent authorisation per client'],
+        },
+        {
+          name: 'Unified tax deadline hub',
+          phase: 'mvp',
+          tech: 'Internal · merges CH + HMRC + manual',
+          desc: 'Better than Inform Direct: single portfolio view of CS, accounts, VAT, CT, PAYE, custom.',
+          features: ['CH deadlines auto-imported', 'HMRC VAT auto-synced', 'Manual diary dates + custom fields', 'iCal export · SMS reminders (SNS)'],
+          tags: ['new'],
+        },
+        {
+          name: 'Stamp Duty guidance (J30)',
+          phase: 'mvp',
+          tech: 'Rules engine · no HMRC API',
+          desc: 'Warn when consideration > £1,000. Link to GOV.UK — do not collect tax.',
+          features: ['0.5% calculation', 'Round up to £5', 'HMRC stamping instructions'],
+        },
+      ],
+    },
+    {
+      id: 'address-identity',
+      icon: '📮',
+      color: '#F472B6',
+      title: 'Address & Identity / AML Stack',
+      subtitle: 'Two-stage pattern: cheap address lookup → expensive IDVT at compliance gate',
+      modules: [
+        {
+          name: 'Postcode & address lookup',
+          phase: 'mvp',
+          tech: 'Ideal Postcodes API · £0.03–0.04/lookup',
+          desc: 'Formation step 2, registered office, officer addresses. UX + CH rejection prevention.',
+          features: ['GET /api/postcode?q=', 'Jurisdiction validation (Eng/Wales vs Scotland vs NI)', 'Cache frequent postcodes', 'Fallback manual entry'],
+        },
+        {
+          name: 'IDVT / identity verification',
+          phase: 'mvp',
+          tech: 'Veriff or Onfido · BrightChecks equivalent',
+          desc: 'ECCTA 2023: directors/PSCs need CH personal codes. ACSP workflow for subscribers.',
+          features: ['Document + selfie check', 'Liveness detection', 'Store verification result + expiry', 'Block AP01/PSC01 until verified OR code entered', '11-char personal code field'],
+        },
+        {
+          name: 'AML screening',
+          phase: 'p2',
+          tech: 'ComplyAdvantage or similar · £0.50–1.20/check',
+          desc: 'Sanctions, PEPs, adverse media — separate from address lookup. Run at officer/PSC onboarding.',
+          features: ['Screen on appoint/register PSC', 'Ongoing monitoring (subscription)', 'Audit trail for ACSP compliance'],
+          tags: ['new'],
+        },
+        {
+          name: 'Address services (formation products)',
+          phase: 'p2',
+          tech: 'Partner or owned RO address inventory',
+          desc: 'Capital+ packages: registered office service, officer service address, trading address (Premium).',
+          features: ['RO service subscription billing', 'Mail forwarding integration', 'AD01 auto-update when service ends'],
+          tags: ['gap'],
+        },
+      ],
+    },
+    {
+      id: 'formation',
+      icon: '🏗️',
+      color: '#38BDF8',
+      title: 'Company Formation',
+      subtitle: 'IN01 wizard + 5 packages + LLP + extras',
+      modules: [
+        {
+          name: 'Name checker',
+          phase: 'mvp',
+          tech: 'CH Public API /search/companies',
+          desc: 'Real-time availability, sensitive words, carry name into wizard.',
+          features: ['Similarity warnings', 'Jurisdiction selection', 'Free on PAYG + subscription'],
+        },
+        {
+          name: 'IN01 incorporation wizard',
+          phase: 'mvp',
+          tech: 'Multi-step React wizard · Zod validation',
+          desc: '7 steps: name → RO → SIC → officers/shareholders → articles → review → submit.',
+          features: ['CH OAuth before submit', 'Model or bespoke articles', 'Post-inc job: registers + certs + minutes', 'Add to portfolio + deadlines'],
+        },
+        {
+          name: 'Formation packages (5 tiers)',
+          phase: 'p2',
+          tech: 'Product config · Stripe line items',
+          desc: 'Exact Inform Direct tiers from live wizard.',
+          features: ['Basic £100 — digital PDF pack', 'Printed £120 — + posted docs', 'Capital £175 — + RO + officer address', 'Professional £210 — + premium certs, bound registers, seal', 'Premium £390 — + stamp, trading address, name plate'],
+          tags: ['gap'],
+        },
+        {
+          name: 'Step 3 à la carte extras',
+          phase: 'p2',
+          tech: 'Addon catalogue',
+          desc: 'Individual extras added to any package during wizard.',
+          features: ['Configurable SKU list', 'Dynamic checkout total', 'Fulfilment flags per SKU'],
+          tags: ['gap'],
+        },
+        {
+          name: 'LLP formation',
+          phase: 'p2',
+          tech: 'LL IN01 · LL AP forms',
+          desc: 'Inform Direct supports LLP — not in our feature guide as dedicated card.',
+          features: ['LLP member appointments', 'LLPSC forms', 'Separate wizard branch'],
+          tags: ['gap'],
+        },
+        {
+          name: 'Auto-generated incorporation docs',
+          phase: 'mvp',
+          tech: 'Puppeteer/PDFKit Lambda · S3',
+          desc: 'Share certs, registers, first board minutes → Document Library.',
+          features: ['Basic certs free', 'Premium templates £5 PAYG', 'Email delivery option'],
+        },
+        {
+          name: 'Physical fulfilment',
+          phase: 'p2',
+          tech: 'OMS · print partner API · Royal Mail',
+          desc: 'Print/post formation docs, bound registers, seal, stamp, name plate.',
+          features: ['Fulfilment queue dashboard', 'Print partner webhook', 'Tracking numbers to client', 'Inventory for seals/stamps'],
+          tags: ['gap', 'new'],
+        },
+        {
+          name: 'Partner offers',
+          phase: 'p2',
+          tech: 'Affiliate links · voucher codes',
+          desc: 'Domain voucher + bank referral in all packages.',
+          features: ['Configurable partner URLs', 'Click tracking', 'Revenue share reporting'],
+          tags: ['gap'],
+        },
+      ],
+    },
+    {
+      id: 'officers-psc',
+      icon: '👤',
+      color: '#A78BFA',
+      title: 'Officers & PSC',
+      subtitle: 'AP/TM/CH + PSC01–09 + ECCTA identity',
+      modules: [
+        { name: 'Appoint officer', phase: 'mvp', tech: 'AP01–AP04 · LL AP', desc: 'Director/secretary appoint with CH filing.', features: ['Individual + corporate', 'Personal code (ECCTA)', 'Residential address encrypted', 'Board minutes template'] },
+        { name: 'Resign / terminate officer', phase: 'mvp', tech: 'TM01/TM02', desc: 'Quorum validation (min 1 director).', features: ['Termination date validation', 'Historical register section'] },
+        { name: 'Change officer details', phase: 'mvp', tech: 'CH01–CH04', desc: 'Update name, address, nationality.', features: ['Free PAYG filing', 'Template minutes £5'] },
+        { name: 'PSC register', phase: 'mvp', tech: 'PSC01–PSC09', desc: 'Add/update PSC with nature of control.', features: ['7 statutory control categories', 'Personal code from Nov 2025', 'Corporate PSC support'] },
+        { name: 'Cease PSC', phase: 'mvp', tech: 'PSC07', desc: 'Remove PSC from register.', features: ['Free PAYG', 'Register history preserved'] },
+        { name: 'PSC identity verification (ACSP)', phase: 'mvp', tech: 'IDVT integration', desc: 'Subscription + ACSP number. VS01 where required.', features: ['Identity check requests', 'Track verification deadlines', 'BrightChecks-equivalent provider'] },
+      ],
+    },
+    {
+      id: 'shares',
+      icon: '📊',
+      color: '#FBBF24',
+      title: 'Shares & Cap Table',
+      subtitle: 'Allotment, transfer, reorganisation, dividends',
+      modules: [
+        { name: 'Share allotment', phase: 'mvp', tech: 'SH01 · DB transactions', desc: 'Issue shares, file SH01, update register.', features: ['Free PAYG', 'Premium certs £5', 'Multi-class support'] },
+        { name: 'Share transfer', phase: 'mvp', tech: 'J30 PDF · atomic DB txn', desc: 'Transfer between shareholders, stamp duty warning.', features: ['J30 generation', 'Certificate cancel/reissue', 'Free PAYG'] },
+        { name: 'Dividend vouchers', phase: 'mvp', tech: 'PDF per shareholder', desc: '£10+VAT per share class PAYG.', features: ['Batch ZIP download', 'Tax year summary'] },
+        { name: 'Share consolidation / sub-division', phase: 'p2', tech: 'SH02', desc: '£40/share class PAYG.', features: ['Board resolutions', 'Register update'] },
+        { name: 'Share options', phase: 'p2', tech: 'Internal + templates', desc: 'EMI/CSOP record-keeping.', features: ['Templates £5 PAYG', 'Exercise → SH01 link'] },
+        { name: 'Share certificates', phase: 'mvp', tech: 'PDF Lambda', desc: 'Branded certs on allot/transfer.', features: ['Premium templates £5', 'Certificate numbering'] },
+        { name: 'Live cap table dashboard', phase: 'p2', tech: 'React · real-time', desc: 'Better than ID: visual ownership %, history timeline.', features: ['Ownership pie chart', 'Transaction audit trail', 'Export to CSV'], tags: ['new'] },
+      ],
+    },
+    {
+      id: 'filings',
+      icon: '📤',
+      color: '#34D399',
+      title: 'Companies House Filings',
+      subtitle: 'Every form Inform Direct supports + gaps',
+      modules: [
+        { name: 'Confirmation statement', phase: 'mvp', tech: 'CS01', desc: '£15+VAT PAYG + CH £50.', features: ['Auto statement of capital', 'Shareholder schedule ≤400', '14-day deadline warnings'] },
+        { name: 'Change registered office', phase: 'mvp', tech: 'AD01', desc: 'Free. Postcode lookup + jurisdiction.', features: ['Address history table'] },
+        { name: 'SAIL address', phase: 'mvp', tech: 'AD03/AD04', desc: 'Alternative inspection location.', features: ['Free PAYG'] },
+        { name: 'Change registered email', phase: 'mvp', tech: 'CH form', desc: 'Free PAYG.', features: ['Validation'] },
+        { name: 'Change accounting reference date', phase: 'mvp', tech: 'AA01', desc: 'Free PAYG.', features: ['Recalculate accounts due'] },
+        { name: 'File accounts', phase: 'mvp', tech: 'CH Accounts API (free) · S3 iXBRL upload', desc: 'Parity with Inform Direct. Dormant £25 · Micro £45 PAYG. Subscribers: included. iXBRL: upload only (not generated in-app).', features: ['Dormant + micro wizards → CH structured filing', 'Upload iXBRL .html/.xhtml → submit to CH (sub + presenter)', 'Client approval step + board minutes', 'Set next accounts due date +9 months', 'Auto-save filing receipt to Document Library'] },
+        { name: 'Charges (mortgages)', phase: 'p2', tech: 'MR01/MR04/MR05', desc: 'Subscription + presenter. CH £14.', features: ['Charge register update'] },
+        { name: 'Strike-off application', phase: 'mvp', tech: 'DS01', desc: '£9 PAYG — listed in ID pricing, no feature card in our guide.', features: ['Solvency checks UX', 'Board resolution template'], tags: ['gap'] },
+        { name: 'Company name change', phase: 'mvp', tech: 'NM01', desc: 'CH fee pass-through — partial in ID doc.', features: ['Name check before submit', 'Certificate of change'], tags: ['gap'] },
+      ],
+    },
+    {
+      id: 'documents',
+      icon: '📁',
+      color: '#C084FC',
+      title: 'Documents, Registers & Templates',
+      subtitle: 'Library, tagging, 400+ templates, branding',
+      modules: [
+        { name: 'Document library', phase: 'mvp', tech: 'S3 pre-signed URLs · $0.023/GB/mo', desc: '250MB/company subscription. Auto-save + upload.', features: ['Virus scan (ClamAV Lambda)', 'PDF text extraction', 'Full-text search'] },
+        { name: 'Document tagging', phase: 'mvp', tech: 'PostgreSQL text[]', desc: 'Preset + custom tags. Portfolio-wide filter (sub).', features: ['Multi-tag', 'Bulk tag actions'] },
+        { name: 'Auto-save to library', phase: 'mvp', tech: 'Event hooks post-transaction', desc: 'Every generated doc saved automatically.', features: ['Link to transaction_id', 'Source: auto | upload'] },
+        { name: 'Statutory registers', phase: 'mvp', tech: 'Auto-maintained from transactions', desc: 'Members, directors, PSC, charges, etc.', features: ['Free PAYG', 'ID logo on PAYG prints'] },
+        { name: 'Automatic register updates', phase: 'mvp', tech: 'Transaction hooks', desc: 'Every filing updates correct register.', features: ['Atomic with DB txn'] },
+        { name: 'Print registers', phase: 'mvp', tech: 'PDF generation', desc: 'Print-ready. Custom branding subscription.', features: ['Firm logo per page', 'Bound register fulfilment (formation)'] },
+        { name: '400+ templates', phase: 'mvp', tech: 'Template engine · merge fields', desc: '£5 standalone PAYG · unlimited sub.', features: ['Pre-populate from company data', 'Save to library'] },
+        { name: 'Bulk ZIP export', phase: 'mvp', tech: 'S3 zip stream', desc: 'ID has this — only checklist in our guide.', features: ['Filter by tag/date', 'Async job + email link'], tags: ['gap'] },
+        { name: 'E-signature on minutes', phase: 'mvp', tech: 'DocuSign API or built-in', desc: 'Differentiator: sign board minutes in-platform.', features: ['Multi-signer workflow', 'Store signed PDF'], tags: ['new'] },
+        { name: 'Custom firm branding', phase: 'mvp', tech: 'Account settings · S3 logo asset', desc: 'Logo on registers, certs, letters.', features: ['Colour theme', 'White-label PDF header'], tags: ['gap'] },
+      ],
+    },
+    {
+      id: 'portfolio',
+      icon: '📊',
+      color: '#60A5FA',
+      title: 'Portfolio, Deadlines & Reporting',
+      subtitle: 'Dashboard, reminders, import, sole traders',
+      modules: [
+        { name: 'Portfolio dashboard', phase: 'mvp', tech: 'React · PostgreSQL aggregates', desc: '10 cos PAYG · unlimited sub.', features: ['Filter/sort/search', 'Overdue badges', 'One-click into company'] },
+        { name: 'Import existing companies', phase: 'mvp', tech: 'CH Public API', desc: 'Free. Pull profile + officers + PSC.', features: ['Bulk import CSV of numbers', 'Duplicate detection'] },
+        { name: 'Deadline reminders', phase: 'mvp', tech: 'Amazon SES · rules engine', desc: 'CS, accounts, AGM, custom dates.', features: ['Email alerts', 'Configurable lead times', 'Escalation to account owner'] },
+        { name: 'Sole trader & non-CH entities', phase: 'p2', tech: 'Manual records', desc: 'Track VAT dates alongside Ltd cos.', features: ['Manual VAT number entry', 'HMRC link auto-fills when connected'], tags: ['gap'] },
+        { name: 'XLS reports', phase: 'mvp', tech: 'ExcelJS server-side', desc: 'Subscription only. Officers, PSCs, addresses.', features: ['Portfolio-wide export', 'Scheduled weekly export'], tags: ['new'] },
+        { name: 'Client compliance score', phase: 'mvp', tech: 'Rules engine · portfolio aggregates', desc: 'RAG status per company from day one — beats Inform Direct\'s flat deadline list.', features: ['Red/amber/green from CS + accounts due dates', 'Overdue filing flags', 'CH sync discrepancy alerts', 'Portfolio filter by compliance status', 'Includes unverified directors + HMRC VAT when IDVT/ASA connected'], tags: ['new'] },
+      ],
+    },
+    {
+      id: 'comms',
+      icon: '📧',
+      color: '#F97316',
+      title: 'Notifications & Comms',
+      subtitle: 'Email, SMS, in-app',
+      modules: [
+        { name: 'Transactional email', phase: 'mvp', tech: 'Amazon SES · $0.10/1k', desc: 'Invites, reminders, filing confirmations.', features: ['HTML templates', 'Bounce handling', 'Unsubscribe for marketing only'] },
+        { name: 'SMS alerts', phase: 'p2', tech: 'Amazon SNS', desc: 'Optional urgent deadline SMS.', features: ['Opt-in per user', 'Spend cap alarms'] },
+        { name: 'In-app notifications', phase: 'mvp', tech: 'WebSocket or polling', desc: 'Filing accepted/rejected, sync discrepancies.', features: ['Notification centre', 'Mark read'] },
+        { name: 'Client portal emails', phase: 'mvp', tech: 'SES · branded', desc: 'White-label emails to end clients.', features: ['Practice name in From', 'Custom footer'] },
+      ],
+    },
+    {
+      id: 'api-integrations',
+      icon: '🔌',
+      color: '#22D3EE',
+      title: 'Public API & Integrations',
+      subtitle: 'Beat Inform Direct API beta with full REST + webhooks',
+      modules: [
+        { name: 'REST API (v1)', phase: 'p2', tech: 'OpenAPI 3 · API Gateway', desc: 'CRUD companies, trigger filings, fetch deadlines.', features: ['OAuth2 client credentials', 'Rate limits', 'Sandbox environment'] },
+        { name: 'Webhooks', phase: 'p2', tech: 'HMAC-signed POST', desc: 'filing.accepted, filing.rejected, sync.discrepancy.', features: ['Retry delivery', 'Event log in dashboard'], tags: ['new'] },
+        { name: 'Xero / QuickBooks', phase: 'p2', tech: 'OAuth accounting APIs', desc: 'Sync company list, pull ARD for deadline cross-check.', features: ['Two-way company link'], tags: ['new'] },
+        { name: 'Practice management', phase: 'p2', tech: 'IRIS · CCH · Sage', desc: 'Agent workflow integrations.', features: ['Contact sync', 'Engagement letters'] },
+      ],
+    },
+    {
+      id: 'support',
+      icon: '🎧',
+      color: '#94A3B8',
+      title: 'Support, Onboarding & Content',
+      subtitle: 'Match Inform Direct support + better in-app guidance',
+      modules: [
+        { name: 'UK support team', phase: 'mvp', tech: 'Freshdesk or Intercom', desc: 'Free to account holders.', features: ['Ticket system', 'SLA for subscription'] },
+        { name: 'In-app guides & tips', phase: 'mvp', tech: 'Contextual help component', desc: 'Step-level tooltips in wizards.', features: ['GOV.UK links', 'ECCTA explainers'] },
+        { name: 'Webinars', phase: 'p2', tech: 'Zoom', desc: 'Free training sessions.', features: ['Recording library'] },
+        { name: 'Interactive onboarding', phase: 'mvp', tech: 'Product tours', desc: 'First company import walkthrough.', features: ['Progress checklist', 'Sample company demo'], tags: ['new'] },
+      ],
+    },
+  ],
+};
+
+const PHASES = [
+  { name: 'Phase 1 — Launch (6–12 months)', desc: 'Full Inform Direct parity: core CH filings, accounts, agent tools, compliance, and practice features.', items: ['Auth (Cognito + MFA + RBAC)', 'CH Public + Filing API (IN01, AP, TM, PSC, CS01, AD, SH, DS01, NM01, AA accounts)', 'Accounts filing: dormant + micro (free CH API) + iXBRL upload/submit', 'Presenter code management', 'Portfolio + import + deadlines + SES reminders', 'Compliance score dashboard (RAG per company)', 'HMRC VAT ASA link', 'IDVT / ACSP workflow', 'Strike-off + company name change', 'XLS reports + bulk ZIP export', 'Custom firm branding (logo on PDFs)', 'E-signatures on board minutes (DocuSign or built-in)', 'Document library + PDF generation + registers', 'Stripe PAYG + subscription', 'Share allotment/transfer/dividends', 'Daily CH sync', 'Ideal Postcodes', 'Client portal emails (branded SES)', 'Interactive onboarding (product tours + sample company)'] },
+  { name: 'Phase 2 — Scale (12–24 months)', desc: 'Formation commerce, fulfilment, integrations, and features beyond Inform Direct.', items: ['Formation 5-tier packages + step-3 extras', 'Physical fulfilment (print/post, seals, bound registers)', 'Address services (RO, officer, trading)', 'LLP formation', 'Public API + webhooks', 'AML screening integration', 'Corporation Tax (CT600) filing', 'Enterprise SSO (SAML)', 'Xero / QuickBooks integrations', 'Practice management (IRIS, CCH, Sage)', 'White-label reseller tier', 'SMS alerts', 'Live cap table dashboard', 'Share consolidation, options, charges'] },
+];
+
+const COMPARE = [
+  { area: 'Core CH filings (46 features)', id: 'Full product', us: 'Phase 1 parity', win: 'tie' },
+  { area: 'Formation 5-tier packages + fulfilment', id: 'Live wizard', us: 'Phase 2 + OMS', win: 'us' },
+  { area: 'HMRC VAT date sync (ASA)', id: 'Yes (subscription)', us: 'Phase 1', win: 'tie' },
+  { area: 'IDVT / ACSP identity', id: 'BrightChecks (subscribers)', us: 'Phase 1', win: 'tie' },
+  { area: 'Public API + webhooks', id: 'Beta / limited', us: 'Phase 2 REST', win: 'us' },
+  { area: 'Real-time cap table UI', id: 'Register PDFs', us: 'Live dashboard', win: 'us' },
+  { area: 'E-signatures', id: 'No', us: 'Phase 1', win: 'us' },
+  { area: 'AML screening (ComplyAdvantage)', id: 'BrightChecks only', us: 'Phase 2 IDVT + AML', win: 'us' },
+  { area: 'Enterprise SSO', id: 'No', us: 'Phase 2 SAML', win: 'us' },
+  { area: 'Custom branding + XLS reports', id: 'Yes (subscription)', us: 'Phase 1', win: 'tie' },
+  { area: 'Compliance RAG score per company', id: 'Deadline list', us: 'Phase 1 risk dashboard', win: 'us' },
+  { area: 'Company accounts (dormant/micro + iXBRL upload)', id: 'Yes — upload only, no tagging', us: 'Phase 1 — same model', win: 'tie' },
+  { area: 'CH software authorisation', id: 'Has it', us: 'Need 3–6mo CH approval', win: 'id' },
+  { area: 'Market trust / 500k+ companies', id: 'Established', us: 'New entrant', win: 'id' },
+];
+
+function renderSidebar() {
+  document.getElementById('sidebar').innerHTML =
+    '<div class="sidebar-title">Modules</div>' +
+    BLUEPRINT.sections.map(s =>
+      `<a class="side-link" href="#${s.id}" data-section="${s.id}">${s.icon} ${s.title}</a>`
+    ).join('') +
+    '<div class="sidebar-title" style="margin-top:16px">Planning</div>' +
+    '<a class="side-link" href="#roadmap">🗓️ Build roadmap</a>' +
+    '<a class="side-link" href="#compare">⚖️ vs Inform Direct</a>' +
+    '<a class="side-link" href="#architecture">🏗️ Architecture</a>';
+}
+
+function moduleCard(m) {
+  const phaseClass = m.phase === 'mvp' ? 'mvp' : 'p2';
+  const phaseLabel = m.phase === 'mvp' ? 'Phase 1' : 'Phase 2';
+  const extraTags = (m.tags || []).map(t =>
+    t === 'gap' ? '<span class="tag id">ID gap</span>' :
+    t === 'new' ? '<span class="tag new">Our edge</span>' : ''
+  ).join('');
+  const feats = m.features.map(f => {
+    const cls = f.startsWith('+') ? 'plus' : f.includes('gap') || f.includes('Gap') ? 'gap' : '';
+    return `<li class="${cls}">${f.replace(/^\+\s*/, '')}</li>`;
+  }).join('');
+  return `<div class="module-card" data-search="${(m.name + m.desc + m.tech + m.features.join(' ')).toLowerCase()}">
+    <h3>${m.name} <span class="tag ${phaseClass}">${phaseLabel}</span>${extraTags}</h3>
+    <div class="tech-list">${m.tech}</div>
+    <p>${m.desc}</p>
+    <ul class="feat-list">${feats}</ul>
+  </div>`;
+}
+
+function renderMain() {
+  const totalModules = BLUEPRINT.sections.reduce((n, s) => n + s.modules.length, 0);
+  let html = `
+    <div class="hero" id="top">
+      <h1>UK CoSec Platform — <em>Full Build Blueprint</em></h1>
+      <p>Complete module map to build an Inform Direct competitor from scratch — auth, billing, CH/HMRC APIs, formation packages, fulfilment, and every feature in the Feature Guide plus all documented gaps. ${totalModules} modules across ${BLUEPRINT.sections.length} layers.</p>
+      <div class="hero-pills">
+        <span class="pill">46 ID features covered</span>
+        <span class="pill new">25+ gap features added</span>
+        <span class="pill better">12 differentiators</span>
+      </div>
+    </div>
+    <input class="search-bar" type="search" id="moduleSearch" placeholder="Search modules…" />
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">${totalModules}</div><div class="stat-lbl">Modules</div></div>
+      <div class="stat-box"><div class="stat-num">15</div><div class="stat-lbl">Layers</div></div>
+      <div class="stat-box"><div class="stat-num">2</div><div class="stat-lbl">Phases</div></div>
+      <div class="stat-box"><div class="stat-num">71+</div><div class="stat-lbl">Features total</div></div>
+    </div>`;
+
+  BLUEPRINT.sections.forEach(s => {
+    html += `<section class="section" id="${s.id}">
+      <div class="section-head">
+        <div class="section-icon" style="background:${s.color}22;color:${s.color}">${s.icon}</div>
+        <h2>${s.title}</h2>
+        <span>${s.modules.length} modules</span>
+      </div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">${s.subtitle}</p>
+      <div class="module-grid">${s.modules.map(moduleCard).join('')}</div>
+    </section>`;
+  });
+
+  html += `<section class="section" id="roadmap">
+    <div class="section-head"><div class="section-icon" style="background:#FBBF2422">🗓️</div><h2>Build Roadmap</h2></div>
+    <div class="phase-timeline">${PHASES.map(p => `
+      <div class="phase"><h3>${p.name}</h3><p>${p.desc}</p><ul>${p.items.map(i => `<li>${i}</li>`).join('')}</ul></div>
+    `).join('')}</div>
+  </section>`;
+
+  html += `<section class="section" id="compare">
+    <div class="section-head"><div class="section-icon" style="background:#FB718522">⚖️</div><h2>vs Inform Direct</h2></div>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead><tr><th>Area</th><th>Inform Direct</th><th>Our platform</th><th>Edge</th></tr></thead>
+        <tbody>${COMPARE.map(r => `<tr>
+          <td>${r.area}</td><td>${r.id}</td><td>${r.us}</td>
+          <td class="${r.win === 'us' ? 'win' : ''}">${r.win === 'us' ? 'Us' : r.win === 'id' ? 'Them' : 'Parity'}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>
+  </section>`;
+
+  html += `<section class="section" id="architecture">
+    <div class="section-head"><div class="section-icon" style="background:#38BDF822">🏗️</div><h2>High-Level Architecture</h2></div>
+    <div class="arch-box">┌─────────────────────────────────────────────────────────────────────────┐
+│  Clients: Web App (React) · Mobile (future) · Public REST API consumers   │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │ HTTPS / JWT
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│  API Gateway  →  App Server (Node/TS)  →  RBAC middleware              │
+│       │              │                                                    │
+│       │    ┌─────────┼─────────┬──────────────┬─────────────┐              │
+│       │    ▼         ▼         ▼              ▼             ▼              │
+│       │  Filing   Document   Billing      Deadline      Identity           │
+│       │  Service  Service    (Stripe)    Engine        (IDVT/AML)        │
+└───────┼──────────────────────────────────────────────────────────────────┘
+        │
+        ├─► PostgreSQL (tenants, companies, officers, filings, audit)
+        ├─► Redis (sessions, job queues, rate limits)
+        ├─► S3 (documents, PDFs, iXBRL)
+        │
+        ├─► Workers: CH poll · CH sync · PDF gen · email · HMRC VAT sync · fulfilment
+        │
+        └─► External APIs:
+              Companies House (Public + Filing + Accounts)
+              HMRC (MTD VAT ASA · CT Gateway)
+              Ideal Postcodes · Veriff/ComplyAdvantage
+              AWS Cognito · SES · SNS · KMS
+              Stripe · Print partner
+              (iXBRL: client-upload pass-through — no tagging vendor in MVP)</div>
+  </section>`;
+
+  document.getElementById('main').innerHTML = html;
+
+  document.getElementById('moduleSearch').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('.module-card').forEach(card => {
+      card.style.display = !q || card.dataset.search.includes(q) ? '' : 'none';
+    });
+  });
+}
+
+renderSidebar();
+renderMain();
+
+document.querySelectorAll('.side-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
