@@ -761,10 +761,6 @@ pre {
 }
 
 /* ===== INFORM DIRECT GAPS TAB ===== */
-.gap-status { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
-.gap-status.missing { background: #3D1A12; color: #F78166; border: 1px solid #F78166; }
-.gap-status.partial { background: #3D2E0A; color: #E3B341; border: 1px solid #E3B341; }
-.gap-status.wrong { background: #2A1F4A; color: #BC8CFF; border: 1px solid #BC8CFF; }
 .gap-tier { font-size: 11px; color: var(--text3); margin-top: 3px; }
 .gap-related { font-size: 11px; color: var(--text2); }
 .gap-related a { color: var(--accent); }
@@ -776,7 +772,6 @@ pre {
 .gap-pkg-card .pkg-name { font-weight: 600; font-size: 13px; color: var(--text); }
 .gap-pkg-card .pkg-price { font-size: 15px; font-weight: 700; color: #3FB950; margin: 6px 0 4px; }
 .gap-pkg-card .pkg-note { font-size: 10px; color: var(--text3); line-height: 1.4; }
-
 /* ===== HIDDEN ===== */
 .hidden { display: none !important; }
 </style>
@@ -833,7 +828,7 @@ pre {
     <button class="filter-btn" onclick="setFilter('billing', this)">Billing</button>
     <button class="filter-btn" onclick="setFilter('support', this)">Support</button>
     <button class="filter-btn" onclick="setFilter('cost-matrix', this)">💰 Cost Matrix</button>
-    <button class="filter-btn" onclick="setFilter('inform-gaps', this)">⚠️ Inform Direct Gaps</button>
+    <button class="filter-btn" onclick="setFilter('inform-gaps', this)">📦 Post-Launch Gaps</button>
   </div>
 
   <!-- CARDS GRID -->
@@ -3904,56 +3899,46 @@ const INFORM_DIRECT_GAPS = [
   {
     group: 'Formation Packages — Physical & Fulfilment',
     items: [
-      { name: 'Printed formation documents (posted)', tier: 'Printed+', status: 'missing', informDirect: 'Hard copies mailed after incorporation', related: 'auto-docs', relatedLabel: 'Auto-Generated Incorporation Docs' },
-      { name: 'Printed share certificates (posted)', tier: 'Printed+', status: 'missing', informDirect: 'Physical share certs posted with formation pack', related: 'share-certificates', relatedLabel: 'Share Certificates' },
-      { name: 'Bound company registers', tier: 'Professional+', status: 'missing', informDirect: 'Physical bound statutory registers supplied', related: 'print-registers', relatedLabel: 'Print Registers (PDF only)' },
-      { name: 'Company seal', tier: 'Professional+', status: 'missing', informDirect: 'Physical company seal included in package', related: 'share-certificates', relatedLabel: 'PDF seal placeholder only' },
-      { name: 'Company stamp', tier: 'Premium', status: 'missing', informDirect: 'Physical company stamp', related: null, relatedLabel: null },
-      { name: 'Company name plate', tier: 'Premium', status: 'missing', informDirect: 'Physical name plate for registered office', related: null, relatedLabel: null },
+      { name: 'Printed formation documents (posted)', tier: 'Printed+', informDirect: 'Hard copies mailed after incorporation', related: 'auto-docs', relatedLabel: 'Auto-Generated Incorporation Docs (PDF only)' },
+      { name: 'Printed share certificates (posted)', tier: 'Printed+', informDirect: 'Physical share certs posted with formation pack', related: 'share-certificates', relatedLabel: 'Share Certificates (PDF only)' },
+      { name: 'Bound company registers', tier: 'Professional+', informDirect: 'Physical bound statutory registers supplied', related: 'print-registers', relatedLabel: 'Print Registers (PDF only)' },
+      { name: 'Company seal', tier: 'Professional+', informDirect: 'Physical company seal included in package', related: 'share-certificates', relatedLabel: 'PDF seal placeholder only' },
+      { name: 'Company stamp', tier: 'Premium', informDirect: 'Physical company stamp', related: null, relatedLabel: null },
+      { name: 'Company name plate', tier: 'Premium', informDirect: 'Physical name plate for registered office', related: null, relatedLabel: null },
     ],
   },
   {
     group: 'Formation Packages — Address Services',
     items: [
-      { name: 'Registered office service', tier: 'Capital+', status: 'missing', informDirect: 'Prestigious London (or other UK) RO address for privacy — ongoing service product', related: 'registered-office', relatedLabel: 'Change Registered Office (AD01 only)' },
-      { name: 'Officer service address', tier: 'Capital+', status: 'missing', informDirect: 'Director privacy address service bundled with formation', related: 'officer-appoint', relatedLabel: 'Officer appoint captures service address field' },
-      { name: 'Trading address service', tier: 'Premium', status: 'missing', informDirect: 'Separate trading/business address service', related: null, relatedLabel: null },
+      { name: 'Registered office service', tier: 'Capital+', informDirect: 'Prestigious London (or other UK) RO address for privacy — ongoing service product', related: 'registered-office', relatedLabel: 'Change Registered Office (AD01 only)' },
+      { name: 'Officer service address', tier: 'Capital+', informDirect: 'Director privacy address service bundled with formation', related: 'officer-appoint', relatedLabel: 'Officer appoint captures service address field' },
+      { name: 'Trading address service', tier: 'Premium', informDirect: 'Separate trading/business address service', related: null, relatedLabel: null },
     ],
   },
   {
-    group: 'Formation Packages — Partner Offers & Extras',
+    group: 'Formation Packages — Wizard, Partners & Entities',
     items: [
-      { name: 'Web domain voucher', tier: 'All packages', status: 'missing', informDirect: 'Included in every formation tier', related: null, relatedLabel: null },
-      { name: 'Barclays bank account offer', tier: 'All packages', status: 'missing', informDirect: 'Partner referral included in every tier', related: null, relatedLabel: null },
-      { name: 'Step 3 individual extras (à la carte)', tier: 'Wizard', status: 'missing', informDirect: 'Add-ons selectable in incorporation wizard step 3', related: 'new-company', relatedLabel: 'Form a New Company (no extras step)' },
-      { name: 'Non-£ share class at formation', tier: 'Professional+', status: 'partial', informDirect: 'Package option for alternate currency share class', related: 'share-allotment', relatedLabel: 'Share Allotment (post-incorporation)' },
-      { name: 'Multiple share classes at formation', tier: 'Professional+', status: 'partial', informDirect: 'Package includes multi-class cap table at incorporation', related: 'new-company', relatedLabel: 'IN01 wizard (not documented as package perk)' },
+      { name: 'Five-tier package model (Basic → Premium)', tier: 'Formation wizard', informDirect: 'Live wizard: Basic £100 · Printed £120 · Capital £175 · Professional £210 · Premium £390 (+VAT)', related: 'new-company', relatedLabel: 'Doc cites £109.99–£409.99 and only Basic/Premium names' },
+      { name: 'Step 3 individual extras (à la carte)', tier: 'Wizard', informDirect: 'Add-ons selectable in incorporation wizard step 3 with fulfilment flags', related: 'new-company', relatedLabel: 'Form a New Company (no extras step)' },
+      { name: 'Web domain voucher', tier: 'All packages', informDirect: 'Included in every formation tier', related: null, relatedLabel: null },
+      { name: 'Barclays bank account offer', tier: 'All packages', informDirect: 'Partner referral included in every tier', related: null, relatedLabel: null },
+      { name: 'Non-£ share class at formation', tier: 'Professional+', informDirect: 'Package option for alternate currency share class', related: 'share-allotment', relatedLabel: 'Share Allotment (post-incorporation)' },
+      { name: 'Multiple share classes at formation', tier: 'Professional+', informDirect: 'Package includes multi-class cap table at incorporation', related: 'new-company', relatedLabel: 'IN01 wizard (not documented as package perk)' },
+      { name: 'LLP formation', tier: 'Formation', informDirect: 'LLP incorporation wizard & LL AP / LLPSC forms', related: 'officer-appoint', relatedLabel: 'LLP forms referenced for officers only' },
+      { name: 'Sole trader & non-CH entities', tier: 'Portfolio', informDirect: 'Track sole traders and manual VAT dates alongside Ltd companies', related: 'sole-trader', relatedLabel: 'Sole Trader entity type (limited coverage)' },
     ],
   },
   {
-    group: 'Formation Package Model (documentation gaps)',
+    group: 'Formation Wizard — Live Prices vs Our Doc',
     items: [
-      { name: 'Printed package tier (£120 + VAT)', tier: 'Printed', status: 'wrong', informDirect: 'Live wizard price & tier name', related: 'new-company', relatedLabel: 'Doc says £109.99 Basic only — no Printed tier' },
-      { name: 'Capital package tier (£175 + VAT)', tier: 'Capital', status: 'missing', informDirect: 'Live wizard tier', related: 'new-company', relatedLabel: 'Not named in doc' },
-      { name: 'Professional package tier (£210 + VAT)', tier: 'Professional', status: 'missing', informDirect: 'Live wizard tier', related: 'new-company', relatedLabel: 'Not named in doc' },
-      { name: 'Premium package price', tier: 'Premium', status: 'wrong', informDirect: '£390.00 + VAT in live wizard', related: 'new-company', relatedLabel: 'Doc says £409.99 + VAT' },
-      { name: 'Basic package price', tier: 'Basic', status: 'wrong', informDirect: '£100.00 + VAT in live wizard', related: 'new-company', relatedLabel: 'Doc says £109.99 + VAT' },
-    ],
-  },
-  {
-    group: 'Other Inform Direct Product Features',
-    items: [
-      { name: 'Strike-off application', tier: 'PAYG £9', status: 'partial', informDirect: 'Voluntary dissolution filing via Inform Direct', related: 'payg', relatedLabel: 'Listed in PAYG fee schedule only' },
-      { name: 'Company name change', tier: 'CH fee pass-through', status: 'partial', informDirect: 'NM01 name change filing', related: 'payg', relatedLabel: 'Mentioned in passing — no feature card' },
-      { name: 'LLP formation', tier: 'Formation', status: 'missing', informDirect: 'LLP incorporation wizard & LL forms', related: 'officer-appoint', relatedLabel: 'LLP forms referenced for officers only' },
-      { name: 'Presenter code configuration', tier: 'Subscription', status: 'partial', informDirect: 'Own CH presenter code for statutory fees', related: 'subscription', relatedLabel: 'Mentioned under Subscription / Charges' },
-      { name: 'Custom firm branding', tier: 'Subscription', status: 'partial', informDirect: 'Logo on printed registers & documents', related: 'print-registers', relatedLabel: 'Scattered — no dedicated feature' },
-      { name: 'Bulk document ZIP export', tier: 'Document Library', status: 'partial', informDirect: 'Bulk download from library', related: 'document-library', relatedLabel: 'Checklist item only in dev guide' },
+      { name: 'Basic package price', tier: 'Basic', informDirect: '£100.00 + VAT in live wizard', related: 'new-company', relatedLabel: 'Doc says £109.99 + VAT' },
+      { name: 'Printed package tier (£120 + VAT)', tier: 'Printed', informDirect: 'Live wizard price & tier name', related: 'new-company', relatedLabel: 'Doc — no Printed tier named' },
+      { name: 'Capital package tier (£175 + VAT)', tier: 'Capital', informDirect: 'Live wizard tier', related: 'new-company', relatedLabel: 'Not named in doc' },
+      { name: 'Professional package tier (£210 + VAT)', tier: 'Professional', informDirect: 'Live wizard tier', related: 'new-company', relatedLabel: 'Not named in doc' },
+      { name: 'Premium package price', tier: 'Premium', informDirect: '£390.00 + VAT in live wizard', related: 'new-company', relatedLabel: 'Doc says £409.99 + VAT' },
     ],
   },
 ];
-
-const GAP_STATUS_LABELS = { missing: 'Not in doc', partial: 'Partial', wrong: 'Price / tier mismatch' };
 
 // =============================================
 // RENDER LOGIC
@@ -4216,7 +4201,7 @@ function renderInformGaps() {
   let rows = '';
   let total = 0;
   filteredGroups.forEach(g => {
-    rows += `<tr class="cm-group-row"><td colspan="4">${g.group}</td></tr>`;
+    rows += `<tr class="cm-group-row"><td colspan="3">${g.group}</td></tr>`;
     g.items.forEach(item => {
       total++;
       const related = item.related
@@ -4228,7 +4213,6 @@ function renderInformGaps() {
           <div class="gap-tier">Inform Direct: ${item.tier}</div>
         </td>
         <td style="color:var(--text2);font-size:12px;line-height:1.5">${item.informDirect}</td>
-        <td><span class="gap-status ${item.status}">${GAP_STATUS_LABELS[item.status]}</span></td>
         <td>${related}</td>
       </tr>`;
     });
@@ -4244,38 +4228,32 @@ function renderInformGaps() {
   container.innerHTML = `
     <div class="cost-matrix-wrap">
       <div class="cost-matrix-intro">
-        <h2>⚠️ Inform Direct Gaps — Not Fully in Our Doc</h2>
-        <p>Comparison of <strong>Inform Direct live product features</strong> (formation wizard, pricing page, FAQs) against what this developer guide documents in the <strong>46 feature cards</strong>. Use this tab to spot commercial, fulfilment, and product gaps — especially formation packaging.</p>
-        <p><span class="gap-status missing">Not in doc</span> = no feature card or meaningful coverage.
-        <span class="gap-status partial">Partial</span> = mentioned in passing or only in a fee list.
-        <span class="gap-status wrong">Price / tier mismatch</span> = documented but conflicts with live Inform Direct UI.</p>
+        <h2>📦 Post-Launch Gaps vs Inform Direct</h2>
+        <p>Inform Direct features we are <strong>not shipping at launch</strong> — deferred to Phase 2 in the <a href="blueprint.html">Product Blueprint</a>. Launch parity (HMRC VAT ASA, presenter code, strike-off, branding, bulk ZIP, iXBRL upload, etc.) is tracked there, not here.</p>
         <p style="margin-top:10px"><strong>Live formation wizard packages</strong> (verified from Inform Direct incorporation flow, June 2026). CH incorporation fee <strong>£100</strong> is separate pass-through on top of these package prices.</p>
         <div class="gap-pkg-grid">${pkgCards}</div>
-        <p style="font-size:12px;color:var(--text3);margin-top:8px">Our doc currently cites £109.99–£409.99 + VAT and only names Basic / Premium — see rows below for mismatches.</p>
+        <p style="font-size:12px;color:var(--text3);margin-top:8px">Launch ships digital formation (Basic-tier IN01 + PDF docs). This tab covers physical fulfilment, address services, five-tier commercial packaging, LLP, and partner offers.</p>
       </div>
       <div class="cost-matrix-legend">
-        <span style="border-color:#F78166;color:#F78166">Not in doc</span>
-        <span style="border-color:#E3B341;color:#E3B341">Partial coverage</span>
-        <span style="border-color:#BC8CFF;color:#BC8CFF">Price / tier mismatch</span>
         <span style="border-color:#60A5FA;color:#60A5FA">Click related card to jump</span>
+        <span style="border-color:#FBBF24;color:#FBBF24">Phase 2 — see Product Blueprint</span>
       </div>
       <div class="cost-matrix-scroll">
         <table class="cost-matrix-table">
           <thead>
             <tr>
-              <th style="width:22%">Inform Direct Feature</th>
-              <th style="width:32%">What Inform Direct Offers</th>
-              <th class="col-api" style="width:14%">Doc Status</th>
-              <th class="col-payg" style="width:32%">Our Closest Coverage</th>
+              <th style="width:24%">Inform Direct Feature</th>
+              <th style="width:40%">What Inform Direct Offers</th>
+              <th class="col-payg" style="width:36%">Our Closest Coverage (Launch)</th>
             </tr>
           </thead>
-          <tbody>${rows || '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text3)">No gaps match your search.</td></tr>'}</tbody>
+          <tbody>${rows || '<tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text3)">No gaps match your search.</td></tr>'}</tbody>
         </table>
       </div>
       <div class="cm-totals">
-        <strong>Summary:</strong> ${total} gap${total !== 1 ? 's' : ''} shown across ${filteredGroups.length} categor${filteredGroups.length !== 1 ? 'ies' : 'y'}.
-        Core secretarial workflows (IN01, officers, PSC, shares, CS, accounts) are well covered — gaps are mainly <strong>commercial formation packaging</strong>, physical fulfilment, address services, and partner offers.
-        Source: <a href="https://www.informdirect.co.uk" target="_blank" rel="noopener">informdirect.co.uk</a> formation wizard & pricing (June 2026).
+        <strong>Summary:</strong> ${total} post-launch gap${total !== 1 ? 's' : ''} — formation commercial packaging, physical fulfilment, address services, LLP, and live wizard price tiers.
+        Everything else Inform Direct offers at launch is in the <a href="blueprint.html">Product Blueprint</a> Phase 1 modules or the 46 feature cards.
+        Source: <a href="https://www.informdirect.co.uk" target="_blank" rel="noopener">informdirect.co.uk</a> (June 2026).
       </div>
     </div>`;
 }
