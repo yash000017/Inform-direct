@@ -196,6 +196,8 @@ a:hover { text-decoration: underline; }
   </div>
   <nav class="nav-links">
     <a href="index.html">← Feature Guide</a>
+    <a href="frontend-blueprint.html">🎨 Frontend Blueprint</a>
+    <a href="infrastructure.html">💷 Infrastructure Cost</a>
     <a href="#roadmap">Roadmap</a>
     <a href="#compare">vs Inform Direct</a>
   </nav>
@@ -223,7 +225,7 @@ const BLUEPRINT = {
           desc: 'All-in-one UK company secretarial SaaS for accountants, formations agents, and in-house teams. Companies House filings + registers + documents + deadlines + agent practice tools + optional physical fulfilment.',
           features: [
             'Parity with Inform Direct\'s 46 documented features',
-            'Close all 25+ gaps from Inform Direct Gaps tab (formation tiers, HMRC VAT link, strike-off, LLP, etc.)',
+            'Phase 1 launch parity + 22 post-launch gaps (formation tiers, fulfilment, LLP, etc.)',
             '+ Modern API-first architecture with webhooks',
             '+ Unified deadline hub: CH + HMRC VAT + CT + custom',
             '+ Real-time cap table & audit trail (better than PDF-only)',
@@ -252,11 +254,11 @@ const BLUEPRINT = {
       subtitle: 'UK data residency, security, and scale from day one',
       modules: [
         {
-          name: 'Cloud hosting (UK)',
+          name: 'Cloud hosting (UK) — budget first',
           phase: 'mvp',
-          tech: 'AWS eu-west-2 (London) · VPC · ALB · ECS/Fargate or EKS',
-          desc: 'All customer data and documents stored in UK region. Multi-AZ for HA.',
-          features: ['Terraform/IaC', 'Auto-scaling app tier', 'RDS PostgreSQL Multi-AZ', 'ElastiCache Redis', 'S3 + KMS encryption', 'CloudFront CDN', 'WAF + Shield'],
+          tech: 'AWS eu-west-2 · EC2 t4g + Cloudflare · ~£45/mo launch',
+          desc: 'UK data residency without enterprise AWS bill. Single EC2 runs API + workers; Cloudflare free tier for SSL/CDN. Upgrade to ALB/Fargate/Multi-AZ when revenue gates it — see Infrastructure Cost page.',
+          features: ['EC2 + RDS single-AZ (~£45/mo launch)', 'Cloudflare free SSL/CDN — no ALB/NAT at start', 'S3 documents · Cognito · SES', 'Upgrade path: Multi-AZ · Fargate · Redis at 2.5k+ cos'],
         },
         {
           name: 'Database & multi-tenancy',
@@ -324,6 +326,13 @@ const BLUEPRINT = {
           features: ['POST /api/invitations', 'Accept flow creates/links user', 'SES transactional email ($0.10/1k)', 'Welcome onboarding checklist'],
         },
         {
+          name: 'Account & profile settings',
+          phase: 'mvp',
+          tech: 'Profile shell · Cognito · user_settings JSONB',
+          desc: 'Inform Direct Your Profile tab — personal details, login history, email prefs, portfolio defaults, shareholders layout.',
+          features: ['7 sidebar sections + Actions panel', 'Your details (name, email, phone, job title, principal contact)', 'Recent logins audit table', 'Read-only access rights view', 'Email preference opt-ins (deadlines, filings, marketing)', 'Portfolio defaults + shareholders screen columns', 'Change password + link to 2FA enrollment'],
+        },
+        {
           name: 'Enterprise SSO',
           phase: 'p2',
           tech: 'Cognito SAML · Azure AD / Okta',
@@ -368,6 +377,13 @@ const BLUEPRINT = {
           tech: 'Stripe Billing · company-count tiers',
           desc: 'Monthly fee by portfolio size. Unlimited transactions, 400+ templates, branding, multi-user.',
           features: ['Live portfolio count billing', '£10 discount on formation packages', 'Own CH presenter code', '250MB doc storage per company'],
+        },
+        {
+          name: 'Firm Account screen',
+          phase: 'mvp',
+          tech: 'Account shell · Stripe Billing · KMS-encrypted secrets',
+          desc: 'Inform Direct Account tab — billing summary, presenter code, ACSP, HMRC VAT status, and 13-item Actions panel.',
+          features: ['Account Details table (name, sub tier, company count, invoice contact, card last4)', 'Edit account details · View invoices · Update card (Stripe Portal)', 'Presenter code + ACSP number + PSC auto-send toggle', 'HMRC MTD VAT link status + Remove HMRC link', 'View offices · Manage custom fields · Approval settings', 'Sender email + transactional template editor', 'Manage client portals · Manage API keys (links to Users & API cards)'],
         },
         {
           name: 'CH fee pass-through',
@@ -526,9 +542,9 @@ const BLUEPRINT = {
         {
           name: 'IN01 incorporation wizard',
           phase: 'mvp',
-          tech: 'Multi-step React wizard · Zod validation',
-          desc: '7 steps: name → RO → SIC → officers/shareholders → articles → review → submit.',
-          features: ['CH OAuth before submit', 'Model or bespoke articles', 'Post-inc job: registers + certs + minutes', 'Add to portfolio + deadlines'],
+          tech: 'Multi-step React wizard · Zod validation · live price panel',
+          desc: 'Inform Direct Incorporation UI: Company type → Package → 5 steps (details, officers, docs, summary, delivery).',
+          features: ['Left sidebar stepper matching ID layout', 'Company type: name + LIMITED suffix + type radios', 'Package tier selection (Basic Phase 1; 5 tiers Phase 2)', 'Sticky Price of Incorporation panel + breakdown', 'Save draft between steps', 'CH OAuth + IN01 submit on Delivery', 'Post-inc: registers + certs + portfolio'],
         },
         {
           name: 'Formation packages (5 tiers)',
@@ -635,13 +651,13 @@ const BLUEPRINT = {
       title: 'Documents, Registers & Templates',
       subtitle: 'Library, tagging, 400+ templates, branding',
       modules: [
-        { name: 'Document library', phase: 'mvp', tech: 'S3 pre-signed URLs · $0.023/GB/mo', desc: '250MB/company subscription. Auto-save + upload.', features: ['Virus scan (ClamAV Lambda)', 'PDF text extraction', 'Full-text search'] },
+        { name: 'Document library', phase: 'mvp', tech: 'S3 · React 3-tab page shell', desc: 'Tab 1 of Documents area (Library · Templates · Reports). 250MB/co subscription.', features: ['Route ?tab=library|templates|reports', 'Virus scan · PDF text extraction', 'Full-text search · bulk ZIP'] },
         { name: 'Document tagging', phase: 'mvp', tech: 'PostgreSQL text[]', desc: 'Preset + custom tags. Portfolio-wide filter (sub).', features: ['Multi-tag', 'Bulk tag actions'] },
         { name: 'Auto-save to library', phase: 'mvp', tech: 'Event hooks post-transaction', desc: 'Every generated doc saved automatically.', features: ['Link to transaction_id', 'Source: auto | upload'] },
         { name: 'Statutory registers', phase: 'mvp', tech: 'Auto-maintained from transactions', desc: 'Members, directors, PSC, charges, etc.', features: ['Free PAYG', 'ID logo on PAYG prints'] },
         { name: 'Automatic register updates', phase: 'mvp', tech: 'Transaction hooks', desc: 'Every filing updates correct register.', features: ['Atomic with DB txn'] },
         { name: 'Print registers', phase: 'mvp', tech: 'PDF generation', desc: 'Print-ready. Custom branding subscription.', features: ['Firm logo per page', 'Bound register fulfilment (formation)'] },
-        { name: '400+ templates', phase: 'mvp', tech: 'Template engine · merge fields', desc: '£5 standalone PAYG · unlimited sub.', features: ['Pre-populate from company data', 'Save to library'] },
+        { name: '400+ templates', phase: 'mvp', tech: 'Template engine · merge fields', desc: '£5 standalone PAYG · unlimited sub. Template Library tab UI.', features: ['Favourite templates per user', 'Filter by category + document type', 'Table: Type, Name, Cost, Preview, Actions', 'Pre-populate from company data', 'Save to library'] },
         { name: 'Bulk ZIP export', phase: 'mvp', tech: 'S3 zip stream', desc: 'ID has this — only checklist in our guide.', features: ['Filter by tag/date', 'Async job + email link'], tags: ['gap'] },
         { name: 'E-signature on minutes', phase: 'mvp', tech: 'DocuSign API or built-in', desc: 'Differentiator: sign board minutes in-platform.', features: ['Multi-signer workflow', 'Store signed PDF'], tags: ['new'] },
         { name: 'Custom firm branding', phase: 'mvp', tech: 'Account settings · S3 logo asset', desc: 'Logo on registers, certs, letters.', features: ['Colour theme', 'White-label PDF header'], tags: ['gap'] },
@@ -654,11 +670,12 @@ const BLUEPRINT = {
       title: 'Portfolio, Deadlines & Reporting',
       subtitle: 'Dashboard, reminders, import, sole traders',
       modules: [
-        { name: 'Portfolio dashboard', phase: 'mvp', tech: 'React · PostgreSQL aggregates', desc: '10 cos PAYG · unlimited sub.', features: ['Filter/sort/search', 'Overdue badges', 'One-click into company'] },
-        { name: 'Import existing companies', phase: 'mvp', tech: 'CH Public API', desc: 'Free. Pull profile + officers + PSC.', features: ['Bulk import CSV of numbers', 'Duplicate detection'] },
+        { name: 'Portfolio dashboard', phase: 'mvp', tech: 'React · PostgreSQL aggregates', desc: '10 cos PAYG · unlimited sub.', features: ['Filter/sort/search', 'Overdue badges', 'One-click into company dashboard'] },
+        { name: 'Company dashboard', phase: 'mvp', tech: 'Company shell · tabbed workspace', desc: 'Per-company Dashboard tab — info, key dates, actions, alerts, notes, activity.', features: ['Tabs: Dashboard · Company · Officers · Shareholders · Share Classes · PSCs', 'Key dates with urgency badges (CS, accounts, VAT)', 'Quick actions (file CS, accounts, registers, docs, minutes)', 'Alerts & notifications table', 'Internal notes + recent activity audit'] },
+        { name: 'Import existing companies', phase: 'mvp', tech: 'CH Public API · 6-step Setup wizard', desc: 'Free. Top nav Import Company → SETUP modal with 6 steps.', features: ['Step 1: name/number search + Registered at CH? toggle', 'Step 2: authentication code (encrypted)', 'Step 3: CH fetch & confirm', 'Steps 4–5: dedupe persons + validate addresses', 'Step 6: summary + optional CH corrections', 'Bulk import CSV of numbers', 'Duplicate portfolio detection'] },
         { name: 'Deadline reminders', phase: 'mvp', tech: 'Amazon SES · rules engine', desc: 'CS, accounts, AGM, custom dates.', features: ['Email alerts', 'Configurable lead times', 'Escalation to account owner'] },
         { name: 'Sole trader & non-CH entities', phase: 'p2', tech: 'Manual records', desc: 'Track VAT dates alongside Ltd cos.', features: ['Manual VAT number entry', 'HMRC link auto-fills when connected'], tags: ['gap'] },
-        { name: 'XLS reports', phase: 'mvp', tech: 'ExcelJS server-side', desc: 'Subscription only. Officers, PSCs, addresses.', features: ['Portfolio-wide export', 'Scheduled weekly export'], tags: ['new'] },
+        { name: 'XLS reports', phase: 'mvp', tech: 'ExcelJS server-side', desc: 'Subscription only. Tab 3 on Documents page.', features: ['Report catalogue UI (officers, PSCs, addresses)', 'Portfolio-wide export', 'Scheduled weekly export'], tags: ['new'] },
         { name: 'Client compliance score', phase: 'mvp', tech: 'Rules engine · portfolio aggregates', desc: 'RAG status per company from day one — beats Inform Direct\'s flat deadline list.', features: ['Red/amber/green from CS + accounts due dates', 'Overdue filing flags', 'CH sync discrepancy alerts', 'Portfolio filter by compliance status', 'Includes unverified directors + HMRC VAT when IDVT/ASA connected'], tags: ['new'] },
       ],
     },
@@ -705,12 +722,12 @@ const BLUEPRINT = {
 };
 
 const PHASES = [
-  { name: 'Phase 1 — Launch (6–12 months)', desc: 'Full Inform Direct parity: core CH filings, accounts, agent tools, compliance, and practice features.', items: ['Auth (Cognito + MFA + RBAC)', 'CH Public + Filing API (IN01, AP, TM, PSC, CS01, AD, SH, DS01, NM01, AA accounts)', 'Accounts filing: dormant + micro (free CH API) + iXBRL upload/submit', 'Presenter code management', 'Portfolio + import + deadlines + SES reminders', 'Compliance score dashboard (RAG per company)', 'HMRC VAT ASA link', 'IDVT / ACSP workflow', 'Strike-off + company name change', 'XLS reports + bulk ZIP export', 'Custom firm branding (logo on PDFs)', 'E-signatures on board minutes (DocuSign or built-in)', 'Document library + PDF generation + registers', 'Stripe PAYG + subscription', 'Share allotment/transfer/dividends', 'Daily CH sync', 'Ideal Postcodes', 'Client portal emails (branded SES)', 'Interactive onboarding (product tours + sample company)'] },
+  { name: 'Phase 1 — Launch (6–12 months)', desc: 'Full Inform Direct parity: core CH filings, accounts, agent tools, compliance, and practice features.', items: ['Auth (Cognito + MFA + RBAC)', 'Firm Account tab + Your Profile screen', 'Portfolio + company dashboard (tabs, alerts, notes)', 'CH Public + Filing API (IN01, AP, TM, PSC, CS01, AD, SH, DS01, NM01, AA accounts)', 'Accounts filing: dormant + micro (free CH API) + iXBRL upload/submit', 'Presenter code management', 'Import + deadlines + SES reminders', 'Compliance score dashboard (RAG per company)', 'HMRC VAT ASA link', 'IDVT / ACSP workflow', 'Strike-off + company name change', 'XLS reports + bulk ZIP export', 'Custom firm branding (logo on PDFs)', 'E-signatures on board minutes (DocuSign or built-in)', 'Document library (3-tab page) + PDF generation + registers', 'Stripe PAYG + subscription', 'Share allotment/transfer/dividends', 'Daily CH sync', 'Ideal Postcodes', 'Client portal emails (branded SES)', 'Interactive onboarding (product tours + sample company)'] },
   { name: 'Phase 2 — Scale (12–24 months)', desc: 'Formation commerce, fulfilment, integrations, and features beyond Inform Direct.', items: ['Formation 5-tier packages + step-3 extras', 'Physical fulfilment (print/post, seals, bound registers)', 'Address services (RO, officer, trading)', 'LLP formation', 'Public API + webhooks', 'AML screening integration', 'Corporation Tax (CT600) filing', 'Enterprise SSO (SAML)', 'Xero / QuickBooks integrations', 'Practice management (IRIS, CCH, Sage)', 'White-label reseller tier', 'SMS alerts', 'Live cap table dashboard', 'Share consolidation, options, charges'] },
 ];
 
 const COMPARE = [
-  { area: 'Core CH filings (46 features)', id: 'Full product', us: 'Phase 1 parity', win: 'tie' },
+  { area: 'Core CH filings (49 features)', id: 'Full product', us: 'Phase 1 parity', win: 'tie' },
   { area: 'Formation 5-tier packages + fulfilment', id: 'Live wizard', us: 'Phase 2 + OMS', win: 'us' },
   { area: 'HMRC VAT date sync (ASA)', id: 'Yes (subscription)', us: 'Phase 1', win: 'tie' },
   { area: 'IDVT / ACSP identity', id: 'BrightChecks (subscribers)', us: 'Phase 1', win: 'tie' },
@@ -764,8 +781,8 @@ function renderMain() {
       <h1>UK CoSec Platform — <em>Full Build Blueprint</em></h1>
       <p>Complete module map to build an Inform Direct competitor from scratch — auth, billing, CH/HMRC APIs, formation packages, fulfilment, and every feature in the Feature Guide plus all documented gaps. ${totalModules} modules across ${BLUEPRINT.sections.length} layers.</p>
       <div class="hero-pills">
-        <span class="pill">46 ID features covered</span>
-        <span class="pill new">25+ gap features added</span>
+        <span class="pill">49 features spec'd</span>
+        <span class="pill new">22 post-launch gaps</span>
         <span class="pill better">12 differentiators</span>
       </div>
     </div>
@@ -774,7 +791,7 @@ function renderMain() {
       <div class="stat-box"><div class="stat-num">${totalModules}</div><div class="stat-lbl">Modules</div></div>
       <div class="stat-box"><div class="stat-num">15</div><div class="stat-lbl">Layers</div></div>
       <div class="stat-box"><div class="stat-num">2</div><div class="stat-lbl">Phases</div></div>
-      <div class="stat-box"><div class="stat-num">71+</div><div class="stat-lbl">Features total</div></div>
+      <div class="stat-box"><div class="stat-num">22</div><div class="stat-lbl">Post-launch gaps</div></div>
     </div>`;
 
   BLUEPRINT.sections.forEach(s => {

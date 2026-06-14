@@ -787,9 +787,10 @@ pre {
       <div class="logo-sub">Developer Feature Guide</div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:12px">
-    <a href="blueprint.html" style="font-size:12px;color:var(--text2);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:6px" title="Full product blueprint to build an Inform Direct competitor">🗺️ Product Blueprint</a>
-    <div class="header-badge">Companies House Authorised</div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <a href="frontend-blueprint.html" style="font-size:12px;color:var(--text2);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:6px;white-space:nowrap" title="Every screen · better UX · no colour lock-in yet">🎨 Frontend Blueprint</a>
+    <a href="blueprint.html" style="font-size:12px;color:var(--text2);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:6px;white-space:nowrap" title="Product blueprint and build roadmap">🗺️ Build Plan</a>
+    <a href="infrastructure.html" style="font-size:12px;color:var(--text2);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:6px;white-space:nowrap" title="AWS and third-party infrastructure cost">💷 Infrastructure Cost</a>
   </div>
 </header>
 
@@ -800,10 +801,10 @@ pre {
     <h1>Every Feature. <span>Fully Documented.</span></h1>
     <p>Click any feature card for a developer guide. Product facts, fees, and Companies House requirements are verified against <a href="https://www.informdirect.co.uk" target="_blank" rel="noopener" style="color:var(--accent)">informdirect.co.uk</a> and <a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" rel="noopener" style="color:var(--accent)">GOV.UK</a> (June 2026).</p>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="num">46</div><div class="lbl">Features</div></div>
-      <div class="hero-stat"><div class="num">400+</div><div class="lbl">Doc Templates</div></div>
-      <div class="hero-stat"><div class="num">1.5M+</div><div class="lbl">CH Submissions</div></div>
-      <div class="hero-stat"><div class="num">500K+</div><div class="lbl">Companies Managed</div></div>
+      <div class="hero-stat"><div class="num">49</div><div class="lbl">Features Spec'd</div></div>
+      <div class="hero-stat"><div class="num">12</div><div class="lbl">Categories</div></div>
+      <div class="hero-stat"><div class="num">22</div><div class="lbl">Post-Launch Gaps</div></div>
+      <div class="hero-stat"><div class="num">2</div><div class="lbl">Build Phases</div></div>
     </div>
   </div>
 
@@ -869,32 +870,52 @@ const FEATURES = [
   icon: '🏗️',
   color: '#2F81F7',
   colorDim: '#1C3A5C',
-  desc: 'Register a new UK limited company directly with Companies House via IN01 form filing.',
-  tags: ['IN01', 'Companies House API', 'Companies Act 2006'],
+  desc: 'Top nav Form New Company — Incorporation wizard with Company type, Package, 5 numbered steps, live price panel. Files IN01 with Companies House.',
+  tags: ['IN01', 'Incorporation Wizard', 'Companies House API', 'Formation Packages'],
   complexity: 'High',
-  apiCount: 2,
-  dbTables: 4,
+  apiCount: 3,
+  dbTables: 6,
   content: {
     overview: `
       <div class="content-section">
-        <div class="c-title"><span class="c-title-icon">📋</span> What This Feature Does</div>
-        <div class="c-text">Company formation allows users to register a brand new UK limited company directly through the software. The user fills in a step-by-step wizard that collects all required incorporation data — company name, registered office address, SIC codes, director(s), initial shareholders, share capital, and Memorandum & Articles of Association. The software packages this into an <strong>IN01</strong> and files electronically with Companies House. Upon success, the company is added to the portfolio and statutory registers are pre-populated.</div>
-        <div class="c-text"><strong>Pricing (Inform Direct):</strong> Formation packages from <strong>£109.99 + VAT</strong> (Basic electronic) to £409.99 + VAT (Premium). Subscribers receive a <strong>£10 discount</strong> per package. <strong>Companies House incorporation fee:</strong> <strong>£100</strong> for digital filing (from 1 Feb 2026) — paid via Inform Direct on PAYG or your presenter code on Subscription.</div>
+        <div class="c-title"><span class="c-title-icon">🖥️</span> Incorporation wizard — UI shell (Inform Direct parity)</div>
+        <div class="c-text">Top nav: grey <strong>Form New Company</strong> opens the <strong>Incorporation</strong> flow (not Account or Import). Three-column layout: <strong>left sidebar stepper</strong> · centre form · <strong>right Price of Incorporation</strong> panel (live total + View breakdown). Route base: <code>/incorporation/{step}</code> e.g. <code>/incorporation/CompanyType</code>. Cancel link + green <strong>Continue</strong> on each step.</div>
       </div>
       <div class="content-section">
-        <div class="c-title"><span class="c-title-icon">🔄</span> User Journey</div>
+        <div class="c-title"><span class="c-title-icon">📋</span> Left sidebar steps</div>
         <div class="flow-steps">
-          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Name Check</div><div class="step-desc">User enters proposed company name. System calls CH Public Data API to check availability in real time. Disallowed words are flagged (e.g. "Bank", "Royal", "University" require special permission).</div></div></div>
-          <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Registered Office</div><div class="step-desc">User enters UK registered address (must be in England/Wales/Scotland matching the jurisdiction chosen). Postcode lookup API auto-fills address fields.</div></div></div>
-          <div class="flow-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">SIC Codes</div><div class="step-desc">User selects 1–4 SIC (Standard Industrial Classification) codes. System provides searchable dropdown from the official 2007 SIC list maintained by ONS.</div></div></div>
-          <div class="flow-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Officers & Shareholders</div><div class="step-desc">User adds at least one director (AP01 data). Adds initial shareholders and share capital structure. All personal data is validated against CH formats.</div></div></div>
-          <div class="flow-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Articles of Association</div><div class="step-desc">User chooses Model Articles (default) or uploads bespoke articles as PDF. Model Articles are the default under Companies Act 2006 s20.</div></div></div>
-          <div class="flow-step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Review & Submit</div><div class="step-desc">Full summary shown. User authenticates with CH account via OAuth2. IN01 is submitted. CH returns a transaction ID within seconds. Company number issued (usually same day).</div></div></div>
-          <div class="flow-step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Post-Incorporation</div><div class="step-desc">On success, all registers auto-created, share certificates generated, first board minutes template produced, company added to portfolio with all CH deadlines loaded.</div></div></div>
+          <div class="flow-step"><div class="step-num">—</div><div class="step-body"><div class="step-title">Company type</div><div class="step-desc">Header: <em>Enter company name and select company type</em>. <strong>Company name</strong> text field + suffix dropdown (<strong>LIMITED</strong> default). Radio options: <strong>Private company limited by shares</strong> (default, Phase 1), Private company limited by guarantee, LLP, Unlisted PLC, CIC — each with <strong>More details</strong> link. Non-Ltd-by-shares types → Phase 2 (see Post-Launch Gaps: LLP formation). Name check via <a href="#" onclick="event.preventDefault();openModal('name-checker')">Company Name Checker</a>.</div></div></div>
+          <div class="flow-step"><div class="step-num">—</div><div class="step-body"><div class="step-title">Package</div><div class="step-desc">Select formation tier: Basic · Printed · Capital · Professional · Premium (live wizard £100–£390 + VAT). Phase 1 ships Basic digital only; full 5-tier catalogue Phase 2. Subscriber <strong>£10 discount</strong> applied here.</div></div></div>
+          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Company details</div><div class="step-desc">Registered office (postcode lookup), jurisdiction, SIC codes (1–4), share capital structure, accounting reference date.</div></div></div>
+          <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Officers / shareholders</div><div class="step-desc">Add directors, secretaries (optional), initial shareholders, PSCs. Portfolio person lookup — reuse existing officer records across companies. Identity check option for ACSP accounts.</div></div></div>
+          <div class="flow-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Documents &amp; extras</div><div class="step-desc">Model or bespoke Articles, same-day formation, à la carte extras (seal, bound registers, etc.). Phase 2 for physical extras — see Post-Launch Gaps.</div></div></div>
+          <div class="flow-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Summary</div><div class="step-desc">Full review with pencil icons to edit any section. Download summary PDF. Price breakdown visible.</div></div></div>
+          <div class="flow-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Delivery</div><div class="step-desc">Payment (Stripe PAYG) or subscription presenter code. Submit IN01 to CH. On success → <a href="#" onclick="event.preventDefault();openModal('auto-docs')">Auto-Generated Incorporation Docs</a>, registers, portfolio add.</div></div></div>
         </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">💷</span> Price panel (right sidebar)</div>
+        <div class="c-text"><strong>Price of Incorporation</strong> — sticky panel updates on every step. Shows <strong>Total (inc. VAT)</strong> in green (e.g. £100.00 at Company type = CH digital fee £100 before package add-on). <strong>View breakdown</strong> expands: Inform Direct package fee + CH incorporation £100 (from 1 Feb 2026) + VAT + subscriber discount. Stripe checkout on step 5 Delivery.</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">📋</span> What This Feature Does</div>
+        <div class="c-text">Registers a brand new UK limited company via electronic <strong>IN01</strong> filing. Collects incorporation data through the wizard above, submits to Companies House, and on approval auto-creates registers, share certificates, board minutes, and adds the company to portfolio with deadlines loaded.</div>
       </div>
     `,
     dev: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Incorporation wizard routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/incorporation/CompanyType</span><div class="route-desc">Step: company name + type selection.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/incorporation/Package</span><div class="route-desc">Step: formation package tier.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/incorporation/CompanyDetails</span><div class="route-desc">Step 1: RO, SIC, share capital.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/incorporation/Officers</span><div class="route-desc">Step 2: officers, shareholders, PSCs.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/incorporation/Documents</span><div class="route-desc">Step 3: articles + extras.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/incorporation/Summary</span><div class="route-desc">Step 4: review.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/incorporation/Delivery</span><div class="route-desc">Step 5: payment + IN01 submit.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/incorporation/price</span><div class="route-desc">Live price breakdown for right panel — recalculates on package/extras change.</div></div>
+        </div>
+      </div>
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">🗄️</span> Database Schema</div>
         <table class="schema-table">
@@ -1030,6 +1051,9 @@ const FEATURES = [
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">✅</span> Implementation Checklist</div>
         <ul class="checklist">
+          <li><span class="check-icon req">●</span>Three-column wizard: left stepper (Company type → Package → 1–5) · centre form · right live price panel</li>
+          <li><span class="check-icon req">●</span>Company type step: name field + LIMITED suffix dropdown + type radios with More details links</li>
+          <li><span class="check-icon req">●</span>Phase 1: Private company limited by shares only; show other types disabled or route to Phase 2 LLP/CIC</li>
           <li><span class="check-icon req">●</span>Apply for CH Developer Hub API key (Public Data API) — takes 1–2 days</li>
           <li><span class="check-icon req">●</span>Apply for CH Filing API authorisation — budget 3–6 months</li>
           <li><span class="check-icon req">●</span>Implement full IN01 payload builder covering all Companies Act 2006 requirements</li>
@@ -1746,19 +1770,29 @@ const FEATURES = [
   icon: '📁',
   color: '#BC8CFF',
   colorDim: '#2A1F4A',
-  desc: 'Secure online storage for all company documents. Upload, tag, search and download. 250 MB per company included.',
-  tags: ['AWS S3', 'File Upload', 'Full-text Search', 'Document Tagging'],
+  desc: 'Tab 1 of Inform Direct\'s Documents area — secure storage, upload, tag, search and download. Hosts the 3-tab screen (Library · Templates · Reports). 250 MB per company included.',
+  tags: ['AWS S3', 'File Upload', '3-Tab UI', 'Document Tagging'],
   complexity: 'Medium',
   apiCount: 2,
   dbTables: 3,
   content: {
     overview: `
       <div class="content-section">
-        <div class="c-title"><span class="c-title-icon">📋</span> What This Feature Does</div>
-        <div class="c-text">The document library provides secure online storage for all company documents — both auto-generated (share certificates, board minutes, registers, correspondence) and user-uploaded (signed agreements, CH correspondence scans, HMRC letters). Documents can be tagged with pre-built categories or custom tags. Every document generated by a transaction is automatically saved here. Search works across file names, tags, and (for PDFs) extracted text content. <strong>PAYG:</strong> auto-saved docs free; full upload <strong>250 MB/company subscription only</strong>. <strong>Subscription:</strong> 250 MB per company included.</div>
+        <div class="c-title"><span class="c-title-icon">🖥️</span> Documents area — 3-tab screen (Inform Direct parity)</div>
+        <div class="c-text">Inform Direct uses one page — <strong>Documents, templates &amp; reports</strong> — with tabs: <strong>Document Library</strong> (this feature) · <strong>Template Library</strong> (see <a href="#" onclick="event.preventDefault();openModal('templates')">400+ Templates</a>) · <strong>Reports</strong> (see <a href="#" onclick="event.preventDefault();openModal('xls-reports')">XLS Reports</a>). Route: <code>/companies/{id}/documents?tab=library|templates|reports</code>. Default tab: library.</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">📋</span> What This Feature Does (Tab 1)</div>
+        <div class="c-text">Secure online storage for all company documents — both auto-generated (share certificates, board minutes, registers, correspondence) and user-uploaded (signed agreements, CH correspondence scans, HMRC letters). Documents can be tagged with pre-built categories or custom tags. Every document generated by a transaction is automatically saved here. Search works across file names, tags, and (for PDFs) extracted text content. <strong>PAYG:</strong> auto-saved docs free; full upload <strong>250 MB/company subscription only</strong>. <strong>Subscription:</strong> 250 MB per company included.</div>
       </div>
     `,
     dev: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Page route (3-tab shell)</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/companies/{companyId}/documents</span><div class="route-desc">React shell for all three tabs. Query <code>tab=library|templates|reports</code>. Tab 1 uses routes below; tabs 2–3 on Templates and XLS Reports cards.</div></div>
+        </div>
+      </div>
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">🗄️</span> Database Schema</div>
         <table class="schema-table">
@@ -1820,6 +1854,7 @@ const FEATURES = [
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">✅</span> Implementation Checklist</div>
         <ul class="checklist">
+          <li><span class="check-icon req">●</span>Single React route with 3 tabs (Library · Templates · Reports); persist tab in URL</li>
           <li><span class="check-icon req">●</span>Use pre-signed S3 URLs — never proxy file content through app servers</li>
           <li><span class="check-icon req">●</span>Enforce per-company storage quota (250 MB default). Track with SUM(file_size_bytes) per company</li>
           <li><span class="check-icon req">●</span>Virus scan all uploaded files (ClamAV on Lambda triggered by S3 event)</li>
@@ -1850,7 +1885,7 @@ const FEATURES = [
     overview: `
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">📋</span> What This Feature Does</div>
-        <div class="c-text">The portfolio dashboard is the home screen for accountants and agents who manage multiple companies. It provides a bird's-eye view of all companies in the portfolio, highlighting upcoming deadlines (confirmation statements, accounts due dates), overdue filings, recent changes, and task notifications. Companies can be filtered, sorted and searched. One click takes you into the detail for any company. <strong>PAYG:</strong> free up to <strong>10 companies</strong>. <strong>Subscription:</strong> unlimited companies.</div>
+        <div class="c-text">The portfolio dashboard is the home screen for accountants and agents who manage multiple companies. Subscription summary and billing live on <a href="#" onclick="event.preventDefault();openModal('firm-account')">Firm Account Settings</a> (Account tab). It provides a bird's-eye view of all companies in the portfolio, highlighting upcoming deadlines (confirmation statements, accounts due dates), overdue filings, recent changes, and task notifications. Companies can be filtered, sorted and searched. One click opens the <a href="#" onclick="event.preventDefault();openModal('company-dashboard')">Company Dashboard</a> for that company. <strong>PAYG:</strong> free up to <strong>10 companies</strong>. <strong>Subscription:</strong> unlimited companies.</div>
       </div>
     `,
     dev: `
@@ -1873,7 +1908,7 @@ const FEATURES = [
         <div class="api-routes">
           <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/portfolio</span><div class="route-desc">Returns all companies the current user has access to, with: status, upcoming deadlines, overdue count, last activity. Paginated & filterable.</div></div>
           <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/portfolio/deadlines</span><div class="route-desc">Returns all upcoming deadlines across all portfolio companies, sorted by urgency. Used for the "upcoming tasks" widget.</div></div>
-          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/portfolio/import</span><div class="route-desc">Import a company by CH number: fetches details from CH Public API and creates the company record. Takes &lt;30 seconds.</div></div>
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/portfolio/import</span><div class="route-desc">Quick import by CH number from portfolio inline — opens same Setup wizard or skips to step 3 if session exists.</div></div>
         </div>
       </div>
       <div class="content-section">
@@ -1893,6 +1928,418 @@ const FEATURES = [
           <li><span class="check-icon req">●</span>Daily CH sync background job (BullMQ cron) — rate-limit aware, processes companies in batches</li>
           <li><span class="check-icon warn">●</span>Show urgency indicators: green (>60 days), amber (14–60 days), red (overdue / &lt;14 days)</li>
           <li><span class="check-icon done">●</span>Company import from CH: pre-populate all data from Public API (takes &lt;30 seconds)</li>
+        </ul>
+      </div>
+    `
+  }
+},
+
+// ====== COMPANY DASHBOARD ======
+{
+  id: 'company-dashboard',
+  category: 'portfolio',
+  title: 'Company Dashboard',
+  icon: '🏠',
+  color: '#2F81F7',
+  colorDim: '#1C3A5C',
+  desc: 'Per-company workspace — Dashboard tab with company info, key dates, quick actions, alerts, notes, and recent activity. Shell for Company · Officers · Shareholders · Share Classes · PSCs tabs.',
+  tags: ['Company Workspace', 'Key Dates', 'Alerts', 'Notes', 'Quick Actions'],
+  complexity: 'Medium',
+  apiCount: 6,
+  dbTables: 5,
+  content: {
+    overview: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🖥️</span> Company workspace — Dashboard tab (Inform Direct parity)</div>
+        <div class="c-text">Opened from <a href="#" onclick="event.preventDefault();openModal('portfolio')">Portfolio Dashboard</a> by clicking a company (e.g. 34K LTD). Route: <code>/companies/{companyId}</code> or <code>/c/{slug}?tab=dashboard</code>. Header shows company name; horizontal tabs below. Default tab: <strong>Dashboard</strong>. Not Account/Profile — this is inside a single company.</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">📋</span> Company tabs (horizontal nav)</div>
+        <div class="c-text"><strong>Dashboard</strong> (this feature) · <strong>Company</strong> (registered details, auth code, SIC, status) · <strong>Officers</strong> → <a href="#" onclick="event.preventDefault();openModal('officer-appoint')">Officers</a> · <strong>Shareholders</strong> → share register · <strong>Share Classes</strong> → cap table · <strong>PSCs</strong> → <a href="#" onclick="event.preventDefault();openModal('psc-register')">PSC Register</a>. Additional tabs on other ID screens (Documents, Transactions) link to <a href="#" onclick="event.preventDefault();openModal('document-library')">Document Library</a> without duplicating those feature specs here.</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">📋</span> Dashboard tab layout</div>
+        <div class="flow-steps">
+          <div class="flow-step"><div class="step-num">A</div><div class="step-body"><div class="step-title">Company info (left column)</div><div class="step-desc">Read-only summary: <strong>Company number</strong>, <strong>VAT registration</strong> (when HMRC ASA linked), <strong>Incorporation date</strong>, <strong>Accounting reference date</strong> (DD/MM display).</div></div></div>
+          <div class="flow-step"><div class="step-num">B</div><div class="step-body"><div class="step-title">Key dates (centre column)</div><div class="step-desc">Upcoming deadlines with urgency badges (green/amber/red): <strong>Next VAT return due</strong> (HMRC sync), <strong>Next accounts due date</strong>, <strong>Final date to submit next confirmation statement</strong>. Labels like "in 23 days", "in 8 months", "in a year". Powered by <a href="#" onclick="event.preventDefault();openModal('deadlines')">Deadline Reminders</a> rules engine.</div></div></div>
+          <div class="flow-step"><div class="step-num">C</div><div class="step-body"><div class="step-title">Actions (right column)</div><div class="step-desc">Primary green: <strong>File confirmation statement</strong> → <a href="#" onclick="event.preventDefault();openModal('confirmation-statement')">Confirmation Statement</a>. Blue links: View company details · View company registers → <a href="#" onclick="event.preventDefault();openModal('statutory-registers')">Statutory Registers</a> · View company documents → Document Library · View company filing history (CH public filings list) · Prepare &amp; file accounts → <a href="#" onclick="event.preventDefault();openModal('file-accounts')">File Accounts</a> · Build board minutes → <a href="#" onclick="event.preventDefault();openModal('templates')">400+ Templates</a>.</div></div></div>
+          <div class="flow-step"><div class="step-num">D</div><div class="step-body"><div class="step-title">Alerts &amp; notifications</div><div class="step-desc">Table: Type (CH icon etc.), Item (message e.g. "Confirmation Statement request successful"), Date created, Date due, Actions. Includes filing outcomes, data discrepancies from import wizard, CH sync flags from <a href="#" onclick="event.preventDefault();openModal('ch-sync')">Daily CH Sync</a>.</div></div></div>
+          <div class="flow-step"><div class="step-num">E</div><div class="step-body"><div class="step-title">Notes</div><div class="step-desc">Internal firm notes per company. <strong>Show completed notes</strong> checkbox. Empty state: "There are no notes for this company." Green <strong>Add new note</strong> button — text + optional due date; not visible to clients.</div></div></div>
+          <div class="flow-step"><div class="step-num">F</div><div class="step-body"><div class="step-title">Recent activity</div><div class="step-desc">Table: Action, Date, Submission status. Audit trail of filings, document generation, and user actions on this company.</div></div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">💷</span> Pricing (Inform Direct)</div>
+        <div class="c-text">Company dashboard, notes, deadline display, and filing history view: <strong>free</strong> on PAYG and Subscription. Chargeable actions (CS, accounts, templates) billed per existing feature pricing when user clicks Actions.</div>
+      </div>
+    `,
+    dev: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Page routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/companies/{companyId}</span><div class="route-desc">Company shell with tab bar. Default tab=dashboard.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/companies/{companyId}?tab=dashboard|company|officers|shareholders|share-classes|pscs</span><div class="route-desc">Deep-link company tabs.</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🗄️</span> Database Schema</div>
+        <table class="schema-table">
+          <thead><tr><th>Table: company_notes</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td>UUID PK</td><td></td></tr>
+            <tr><td>company_id</td><td>UUID FK</td><td></td></tr>
+            <tr><td>author_user_id</td><td>UUID FK</td><td></td></tr>
+            <tr><td>body</td><td>TEXT</td><td></td></tr>
+            <tr><td>due_date</td><td>DATE NULL</td><td></td></tr>
+            <tr><td>completed_at</td><td>TIMESTAMP NULL</td><td></td></tr>
+            <tr><td>created_at</td><td>TIMESTAMP</td><td></td></tr>
+          </tbody>
+        </table>
+        <table class="schema-table">
+          <thead><tr><th>Table: company_alerts</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td>UUID PK</td><td></td></tr>
+            <tr><td>company_id</td><td>UUID FK</td><td></td></tr>
+            <tr><td>alert_type</td><td>ENUM</td><td>ch_filing | sync_discrepancy | hmrc | custom</td></tr>
+            <tr><td>message</td><td>TEXT</td><td></td></tr>
+            <tr><td>due_date</td><td>DATE NULL</td><td></td></tr>
+            <tr><td>resolved_at</td><td>TIMESTAMP NULL</td><td></td></tr>
+            <tr><td>created_at</td><td>TIMESTAMP</td><td></td></tr>
+          </tbody>
+        </table>
+        <table class="schema-table">
+          <thead><tr><th>Table: activity_log</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td>UUID PK</td><td></td></tr>
+            <tr><td>company_id</td><td>UUID FK</td><td></td></tr>
+            <tr><td>user_id</td><td>UUID FK NULL</td><td>System actions null</td></tr>
+            <tr><td>action</td><td>VARCHAR(200)</td><td>Human-readable label</td></tr>
+            <tr><td>submission_status</td><td>VARCHAR(50) NULL</td><td>accepted | rejected | pending</td></tr>
+            <tr><td>created_at</td><td>TIMESTAMP</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Internal API Routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/companies/{companyId}/dashboard</span><div class="route-desc">Single payload: company info, key dates with urgency, open alerts count, recent activity preview.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/companies/{companyId}/alerts</span><div class="route-desc">Paginated alerts table for Dashboard section D.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/companies/{companyId}/notes</span><div class="route-desc">List notes. POST creates; PATCH marks complete.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/companies/{companyId}/activity</span><div class="route-desc">Recent activity feed — joins filings, documents, user events.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/companies/{companyId}/filing-history</span><div class="route-desc">CH filing history for "View company filing history" action — from local receipts + CH Public API.</div></div>
+        </div>
+      </div>
+    `,
+    arch: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">✅</span> Implementation Checklist</div>
+        <ul class="checklist">
+          <li><span class="check-icon req">●</span>Company shell: header name + 6 tabs; Dashboard default on portfolio drill-down</li>
+          <li><span class="check-icon req">●</span>Three-column top row: info · key dates (badged urgency) · action buttons</li>
+          <li><span class="check-icon req">●</span>Primary CTA: green File confirmation statement when CS window open</li>
+          <li><span class="check-icon req">●</span>VAT due date on dashboard when HMRC ASA linked (else hidden or "Link HMRC")</li>
+          <li><span class="check-icon req">●</span>Notes: firm-internal only; show/hide completed toggle</li>
+          <li><span class="check-icon req">●</span>Activity log: append on every filing submit and document generate</li>
+          <li><span class="check-icon warn">●</span>Alerts feed merges CH sync discrepancies + filing outcomes + import "Resolve later" items</li>
+          <li><span class="check-icon done">●</span>Action buttons deep-link to existing transaction wizards — no duplicate filing specs on this card</li>
+        </ul>
+      </div>
+    `
+  }
+},
+
+// ====== FIRM ACCOUNT SETTINGS ======
+{
+  id: 'firm-account',
+  category: 'billing',
+  title: 'Firm Account Settings',
+  icon: '🏢',
+  color: '#E3B341',
+  colorDim: '#3D2E0A',
+  desc: 'Inform Direct Account tab — firm-level billing, subscription summary, presenter code, ACSP, HMRC VAT link, and admin Actions panel (users, invoices, workflows, client portals).',
+  tags: ['Account Tab', 'Stripe Billing', 'Presenter Code', 'ACSP', 'HMRC ASA'],
+  complexity: 'High',
+  apiCount: 12,
+  dbTables: 8,
+  content: {
+    overview: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🖥️</span> Account tab — "Your Account" screen (Inform Direct parity)</div>
+        <div class="c-text">Top nav: <strong>Account</strong> (this feature — firm/admin) vs <strong>Your Profile</strong> (personal — see <a href="#" onclick="event.preventDefault();openModal('account-profile')">Your Profile Settings</a>). Route: <code>/account</code>. Read-only <strong>Account Details</strong> table centre; <strong>Actions</strong> button list right. Owner-only for billing and admin actions.</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">📋</span> Account Details table (read-only summary)</div>
+        <div class="flow-steps">
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Account name</div><div class="step-desc">Legal / trading name of the firm (e.g. QUANTUM UK BUSINESS SOLUTIONS LIMITED).</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Organisation to be invoiced</div><div class="step-desc">Entity name on Stripe invoices — may differ from account name.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Account type</div><div class="step-desc">Pay As You Go or <strong>Monthly subscription</strong> — see <a href="#" onclick="event.preventDefault();openModal('subscription')">Subscription Plans</a> / <a href="#" onclick="event.preventDefault();openModal('payg')">Pay As You Go</a>.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Current subscription details</div><div class="step-desc">Live portfolio count (e.g. 294 companies), monthly fee ex-VAT (e.g. £162.77 + VAT), next payment date. Recalculated monthly from portfolio count.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Invoice contact · email · address · telephone</div><div class="step-desc">Billing contact person, invoice email, full postal address, phone — used on Stripe invoices and dunning emails.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Primary credit / debit card</div><div class="step-desc">Masked last four digits (e.g. **** 2584) and expiry. Updated via <strong>Update card details</strong> → Stripe Customer Portal or Payment Element.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Presenter information</div><div class="step-desc">"Use Inform Direct's account" (PAYG / default) or <strong>own presenter code</strong> (subscription). CH filing fees debited from configured presenter account.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">ACSP authorised agent number</div><div class="step-desc">Companies House ACSP registration (e.g. AP009622). Required for <a href="#" onclick="event.preventDefault();openModal('psc-identity')">PSC Identity Verification</a> workflow.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Acting for clients</div><div class="step-desc">Yes/No — firm acts as agent for client companies (accountant / formations agent).</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Account category</div><div class="step-desc">User segment: Accountant, Formations agent, In-house, Other — drives onboarding defaults and support routing.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Acting as agent for incorporations</div><div class="step-desc">Yes/No — whether firm files IN01 on behalf of clients (affects formation wizard defaults).</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">Automate sending of PSC personal codes</div><div class="step-desc">Yes/No — auto-email PSCs their Companies House personal verification codes when identity checks complete.</div></div></div>
+          <div class="flow-step"><div class="step-num">•</div><div class="step-body"><div class="step-title">HMRC Making Tax Digital VAT</div><div class="step-desc">Link status: not linked / "Inform Direct link authorised" / expired. ASA OAuth — see blueprint HMRC VAT module. Removed via <strong>Remove HMRC link</strong>.</div></div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">⚡</span> Actions panel (right sidebar — 13 buttons)</div>
+        <div class="c-text">
+          <strong>Edit account details</strong> — modal for invoice contact, address, category, ACSP, presenter mode, PSC auto-send, acting-for flags.<br>
+          <strong>View invoices</strong> — paginated invoice list + PDF download (Stripe Billing history).<br>
+          <strong>Update card details</strong> — Stripe Customer Portal or embedded Payment Element.<br>
+          <strong>View offices</strong> — firm's branch/office locations (name, address) for multi-site practices; optional default on correspondence.<br>
+          <strong>Manage users</strong> → <a href="#" onclick="event.preventDefault();openModal('user-management')">Users &amp; Access Control</a>.<br>
+          <strong>Manage custom fields</strong> — define extra data fields on company records (text, date, dropdown) shown on portfolio and company detail.<br>
+          <strong>Approval settings</strong> — maker-checker rules: require second user to approve filings above threshold or all CS/accounts submissions.<br>
+          <strong>View workflows</strong> — list of configured automation workflows (deadline reminders, filing sequences, client notifications).<br>
+          <strong>Sender email settings</strong> — custom From name + reply-to for client-facing SES emails (subscription white-label).<br>
+          <strong>Manage email templates</strong> — edit transactional email bodies (reminders, filing confirmations, invitations) — distinct from <a href="#" onclick="event.preventDefault();openModal('templates')">400+ document templates</a>.<br>
+          <strong>Manage client portals</strong> — enable/disable client login, branding, which documents clients can view, e-sign on minutes.<br>
+          <strong>Remove HMRC link</strong> — revoke ASA OAuth token; stops VAT date auto-sync until re-authorised.<br>
+          <strong>Manage API keys</strong> → <a href="#" onclick="event.preventDefault();openModal('api-beta')">API (Beta)</a> — create/revoke keys, scopes, rate limits.
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">💷</span> Pricing (Inform Direct)</div>
+        <div class="c-text">Account screen itself is <strong>free</strong>. Subscription billing, multi-user, presenter code, ACSP IDVT, HMRC ASA, API, and white-label email require <strong>Subscription</strong>. PAYG shows limited fields (no subscription row, no multi-user).</div>
+      </div>
+    `,
+    dev: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Page routes &amp; sub-routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account</span><div class="route-desc">Firm account shell: Account Details table + Actions panel. Requires account owner or billing-admin role.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/invoices</span><div class="route-desc">Invoice list view (from Actions → View invoices).</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/offices</span><div class="route-desc">Branch offices CRUD UI.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/custom-fields</span><div class="route-desc">Custom field definitions admin.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/approval-settings</span><div class="route-desc">Maker-checker configuration.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/workflows</span><div class="route-desc">Workflow list and editor.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/sender-email</span><div class="route-desc">SES From/reply-to + domain verification status.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/email-templates</span><div class="route-desc">Transactional template editor (Handlebars/MJML stored in DB).</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/client-portals</span><div class="route-desc">Client portal config per account.</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🗄️</span> Database Schema</div>
+        <table class="schema-table">
+          <thead><tr><th>Table: accounts</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td>UUID PK</td><td>Tenant root</td></tr>
+            <tr><td>name</td><td>VARCHAR(255)</td><td>Account name</td></tr>
+            <tr><td>invoice_org_name</td><td>VARCHAR(255)</td><td>Organisation to be invoiced</td></tr>
+            <tr><td>account_type</td><td>ENUM</td><td>payg | subscription</td></tr>
+            <tr><td>stripe_customer_id</td><td>VARCHAR(50)</td><td>Stripe Customer</td></tr>
+            <tr><td>stripe_subscription_id</td><td>VARCHAR(50) NULL</td><td>Active sub</td></tr>
+            <tr><td>invoice_contact_name</td><td>VARCHAR(200)</td><td></td></tr>
+            <tr><td>invoice_email</td><td>VARCHAR(255)</td><td></td></tr>
+            <tr><td>invoice_address_json</td><td>JSONB</td><td>Structured UK address</td></tr>
+            <tr><td>invoice_phone</td><td>VARCHAR(30)</td><td></td></tr>
+            <tr><td>presenter_mode</td><td>ENUM</td><td>platform | own_code</td></tr>
+            <tr><td>presenter_code_enc</td><td>TEXT NULL</td><td>Encrypted at rest (KMS)</td></tr>
+            <tr><td>acsp_number</td><td>VARCHAR(20) NULL</td><td>e.g. AP009622</td></tr>
+            <tr><td>acting_for_clients</td><td>BOOLEAN</td><td></td></tr>
+            <tr><td>account_category</td><td>ENUM</td><td>accountant | formations | inhouse | other</td></tr>
+            <tr><td>acting_as_incorp_agent</td><td>BOOLEAN</td><td></td></tr>
+            <tr><td>auto_send_psc_codes</td><td>BOOLEAN</td><td>Default false</td></tr>
+            <tr><td>hmrc_asa_token_enc</td><td>TEXT NULL</td><td>OAuth refresh token</td></tr>
+            <tr><td>hmrc_asa_status</td><td>ENUM</td><td>none | authorised | expired</td></tr>
+            <tr><td>sender_email_config</td><td>JSONB</td><td>from_name, reply_to, verified_domain</td></tr>
+          </tbody>
+        </table>
+        <table class="schema-table">
+          <thead><tr><th>Table: account_offices</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td>UUID PK</td><td></td></tr>
+            <tr><td>account_id</td><td>UUID FK</td><td></td></tr>
+            <tr><td>name</td><td>VARCHAR(100)</td><td>Office label</td></tr>
+            <tr><td>address_json</td><td>JSONB</td><td></td></tr>
+          </tbody>
+        </table>
+        <table class="schema-table">
+          <thead><tr><th>Table: custom_field_definitions</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td>UUID PK</td><td></td></tr>
+            <tr><td>account_id</td><td>UUID FK</td><td></td></tr>
+            <tr><td>label</td><td>VARCHAR(100)</td><td></td></tr>
+            <tr><td>field_type</td><td>ENUM</td><td>text | date | select</td></tr>
+            <tr><td>options_json</td><td>JSONB NULL</td><td>For dropdowns</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Internal API Routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/account</span><div class="route-desc">Full account summary for Account Details table (includes Stripe card last4, sub tier, company count).</div></div>
+          <div class="api-route"><span class="method PATCH">PATCH</span><span class="route-path">/api/account</span><div class="route-desc">Edit account details (owner only).</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/account/invoices</span><div class="route-desc">List invoices from Stripe; include PDF URL.</div></div>
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/account/billing-portal</span><div class="route-desc">Create Stripe Customer Portal session (update card, cancel sub).</div></div>
+          <div class="api-route"><span class="method PATCH">PATCH</span><span class="route-path">/api/account/presenter</span><div class="route-desc">Set presenter mode + encrypted code; test CH connection.</div></div>
+          <div class="api-route"><span class="method DELETE">DELETE</span><span class="route-path">/api/account/hmrc-link</span><div class="route-desc">Revoke HMRC ASA OAuth token (Remove HMRC link).</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/account/offices</span><div class="route-desc">List branch offices. POST/PATCH/DELETE for CRUD.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/account/custom-fields</span><div class="route-desc">Custom field definitions. Full CRUD for account admins.</div></div>
+          <div class="api-route"><span class="method PATCH">PATCH</span><span class="route-path">/api/account/approval-settings</span><div class="route-desc">Maker-checker rules JSON.</div></div>
+          <div class="api-route"><span class="method PATCH">PATCH</span><span class="route-path">/api/account/sender-email</span><div class="route-desc">Update From/reply-to; trigger SES domain verification.</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🔌</span> Third-Party APIs Used</div>
+        <div class="third-party">
+          <div class="third-party-header"><span class="tp-icon">💳</span><span class="tp-name">Stripe Billing + Customer Portal</span><span class="tp-badge" style="background:#3D2E0A;color:#E3B341;border:1px solid #E3B341">PAID</span></div>
+          <div class="tp-desc">Subscription lifecycle, invoices, card on file, billing portal for Update card details and View invoices.</div>
+          <div class="tp-cost">💰 Cost: 1.5% + 20p UK cards on subscription charges</div>
+        </div>
+        <div class="third-party">
+          <div class="third-party-header"><span class="tp-icon">📧</span><span class="tp-name">Amazon SES</span><span class="tp-badge" style="background:#3D2E0A;color:#E3B341;border:1px solid #E3B341">PAID</span></div>
+          <div class="tp-desc">Sender email settings + Manage email templates. Domain verification for custom From address.</div>
+          <div class="tp-cost">💰 Cost: $0.10 per 1,000 emails</div>
+        </div>
+      </div>
+    `,
+    arch: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">✅</span> Implementation Checklist</div>
+        <ul class="checklist">
+          <li><span class="check-icon req">●</span>Phase 1: Account Details table, Edit account details, View invoices, Update card, Manage users link, presenter + ACSP, HMRC link status + Remove link, auto PSC codes toggle</li>
+          <li><span class="check-icon req">●</span>Phase 1: Sender email settings + basic transactional template editor</li>
+          <li><span class="check-icon warn">●</span>Phase 1: View offices, Manage custom fields, Approval settings — match Inform Direct; start with CRUD + simple rules</li>
+          <li><span class="check-icon warn">●</span>Phase 1: Manage client portals — enable portal + branding; full e-sign in blueprint</li>
+          <li><span class="check-icon warn">●</span>Phase 2: View workflows automation builder; advanced approval chains</li>
+          <li><span class="check-icon req">●</span>Encrypt presenter_code and hmrc_asa_token with AWS KMS — never log plaintext</li>
+          <li><span class="check-icon req">●</span>Subscription company count on Account page must match live portfolio count (include dissolved until removed)</li>
+          <li><span class="check-icon done">●</span>Cross-link Actions to user-management, api-beta, psc-identity, subscription — no duplicate deep specs</li>
+        </ul>
+      </div>
+    `
+  }
+},
+
+// ====== YOUR PROFILE SETTINGS ======
+{
+  id: 'account-profile',
+  category: 'security',
+  title: 'Your Profile Settings',
+  icon: '👤',
+  color: '#58A6FF',
+  colorDim: '#1C3A5C',
+  desc: 'Inform Direct Your Profile tab — personal details, login history, access rights, email preferences, portfolio defaults, and shareholders screen layout.',
+  tags: ['Your Profile', 'Email Prefs', 'Login Audit', 'Cognito'],
+  complexity: 'Medium',
+  apiCount: 8,
+  dbTables: 6,
+  content: {
+    overview: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🖥️</span> Your Profile tab — sidebar screen (Inform Direct parity)</div>
+        <div class="c-text">Top nav: <strong>Account</strong> (firm billing &amp; admin — see <a href="#" onclick="event.preventDefault();openModal('firm-account')">Firm Account Settings</a>) and <strong>Your Profile</strong> (this feature — personal settings). Left sidebar sections + right <strong>Actions</strong> panel. Route: <code>/account/profile?section=details|logins|access|email|settings|portfolio|shareholders</code>. Default: <strong>Your details</strong>.</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">📋</span> Sidebar sections</div>
+        <div class="flow-steps">
+          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Your details</div><div class="step-desc">Read-only view: name, email address, telephone, job title, <strong>Principal contact</strong> (Yes/No — firm’s main point of contact for support/billing). Action: <strong>Edit your details</strong>.</div></div></div>
+          <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Your recent logins</div><div class="step-desc">Audit table: date/time, IP address, browser/device, success/failure. Last ~20 sessions. Helps users spot unauthorised access.</div></div></div>
+          <div class="flow-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Your access rights</div><div class="step-desc">Read-only list of companies this user can access and level per company (view / full / accounts-only). Admin assignment lives on <a href="#" onclick="event.preventDefault();openModal('user-management')">Users &amp; Access Control</a> — see also <a href="#" onclick="event.preventDefault();openModal('permissions')">Access Rights &amp; Permissions</a>.</div></div></div>
+          <div class="flow-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Your email preferences</div><div class="step-desc">Opt in/out per category: deadline reminders, filing confirmations, CH sync alerts, product updates, marketing. Action: <strong>Change email preferences</strong>.</div></div></div>
+          <div class="flow-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Your settings</div><div class="step-desc">Personal prefs: date format (DD/MM/YYYY), default document output (PDF), session timeout. Firm-level presenter code, ACSP, and branding are on <a href="#" onclick="event.preventDefault();openModal('firm-account')">Firm Account Settings</a>. Action: <strong>Change settings</strong>.</div></div></div>
+          <div class="flow-step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Your portfolio settings</div><div class="step-desc">Defaults for <a href="#" onclick="event.preventDefault();openModal('portfolio')">Portfolio Dashboard</a>: companies per page, default sort (name / next deadline / status), default filter (active only / all), show dissolved companies.</div></div></div>
+          <div class="flow-step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Shareholders screen settings</div><div class="step-desc">Per-user layout for Register of Members / shareholders tab inside a company: visible columns (holding %, certificate no., address, date acquired), default sort, compact vs expanded rows. Applies across all companies user can access.</div></div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">⚡</span> Actions panel (right sidebar)</div>
+        <div class="c-text"><strong>Edit your details</strong> · <strong>Change password</strong> (Cognito hosted UI or in-app form) · <strong>Enable two-step login</strong> → <a href="#" onclick="event.preventDefault();openModal('two-factor')">Two-Factor Authentication</a> (subscription only) · <strong>Change email preferences</strong> · <strong>Change settings</strong>. Each action opens a modal or sub-route; no full page reload.</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">💷</span> Pricing (Inform Direct)</div>
+        <div class="c-text">Profile screen and basic settings: <strong>free on PAYG and Subscription</strong>. Multi-user access rights, 2FA, and custom branding require <strong>Subscription</strong>.</div>
+      </div>
+    `,
+    dev: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Page routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/account/profile</span><div class="route-desc">Your Profile shell with sidebar + actions. Query <code>section=details|logins|access|email|settings|portfolio|shareholders</code>.</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🗄️</span> Database Schema</div>
+        <table class="schema-table">
+          <thead><tr><th>Table: user_profiles</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>user_id</td><td>UUID PK FK</td><td>→ users (1:1)</td></tr>
+            <tr><td>display_name</td><td>VARCHAR(200)</td><td>Full name</td></tr>
+            <tr><td>phone</td><td>VARCHAR(30) NULL</td><td></td></tr>
+            <tr><td>job_title</td><td>VARCHAR(100) NULL</td><td></td></tr>
+            <tr><td>is_principal_contact</td><td>BOOLEAN</td><td>One per account recommended</td></tr>
+            <tr><td>updated_at</td><td>TIMESTAMP</td><td></td></tr>
+          </tbody>
+        </table>
+        <table class="schema-table">
+          <thead><tr><th>Table: user_settings</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>user_id</td><td>UUID PK FK</td><td></td></tr>
+            <tr><td>date_format</td><td>VARCHAR(20)</td><td>Default DD/MM/YYYY</td></tr>
+            <tr><td>session_timeout_minutes</td><td>INTEGER</td><td>15–480</td></tr>
+            <tr><td>settings_json</td><td>JSONB</td><td>portfolio_defaults, shareholders_columns, UI prefs</td></tr>
+          </tbody>
+        </table>
+        <table class="schema-table">
+          <thead><tr><th>Table: email_preferences</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>user_id</td><td>UUID PK FK</td><td></td></tr>
+            <tr><td>deadline_reminders</td><td>BOOLEAN</td><td>Default true</td></tr>
+            <tr><td>filing_confirmations</td><td>BOOLEAN</td><td>Default true</td></tr>
+            <tr><td>sync_alerts</td><td>BOOLEAN</td><td>CH discrepancy alerts</td></tr>
+            <tr><td>product_updates</td><td>BOOLEAN</td><td></td></tr>
+            <tr><td>marketing</td><td>BOOLEAN</td><td>Default false — GDPR explicit opt-in</td></tr>
+          </tbody>
+        </table>
+        <table class="schema-table">
+          <thead><tr><th>Table: login_events</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td>UUID PK</td><td></td></tr>
+            <tr><td>user_id</td><td>UUID FK</td><td></td></tr>
+            <tr><td>logged_in_at</td><td>TIMESTAMP</td><td></td></tr>
+            <tr><td>ip_address</td><td>INET</td><td>From X-Forwarded-For</td></tr>
+            <tr><td>user_agent</td><td>TEXT</td><td>Parsed for browser label in UI</td></tr>
+            <tr><td>success</td><td>BOOLEAN</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Internal API Routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/me/profile</span><div class="route-desc">Current user profile + settings + email prefs (single payload for profile shell).</div></div>
+          <div class="api-route"><span class="method PATCH">PATCH</span><span class="route-path">/api/me/profile</span><div class="route-desc">Update name, phone, job title, principal contact flag.</div></div>
+          <div class="api-route"><span class="method PATCH">PATCH</span><span class="route-path">/api/me/email-preferences</span><div class="route-desc">Update opt-in flags. Respect marketing opt-in audit trail.</div></div>
+          <div class="api-route"><span class="method PATCH">PATCH</span><span class="route-path">/api/me/settings</span><div class="route-desc">Date format, session timeout, portfolio defaults, shareholders column layout.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/me/logins</span><div class="route-desc">Paginated recent login events (newest first).</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/me/access-rights</span><div class="route-desc">Read-only: companies + access_level from portfolio_access for current user.</div></div>
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/me/change-password</span><div class="route-desc">Proxy to Cognito ChangePassword (current + new password). Or redirect to Cognito hosted UI.</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🔌</span> Third-Party APIs Used</div>
+        <div class="third-party">
+          <div class="third-party-header"><span class="tp-icon">🔐</span><span class="tp-name">AWS Cognito User Pools</span><span class="tp-badge" style="background:#1C2A4A;color:#2F81F7;border:1px solid #2F81F7">RECOMMENDED</span></div>
+          <div class="tp-desc">Email stored in Cognito; profile fields in app DB. Password change and MFA enrollment via Cognito APIs. Log login events from post-auth Lambda trigger.</div>
+          <div class="tp-cost">💰 Cost: MAU pricing — see Two-Factor Authentication card</div>
+        </div>
+      </div>
+    `,
+    arch: `
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">✅</span> Implementation Checklist</div>
+        <ul class="checklist">
+          <li><span class="check-icon req">●</span>Single profile shell with 7 sidebar sections + URL deep-linking (<code>?section=</code>)</li>
+          <li><span class="check-icon req">●</span>Log every successful and failed login to login_events (Cognito PostAuthentication + failed attempt hook)</li>
+          <li><span class="check-icon req">●</span>Marketing emails: store opt-in timestamp; never pre-check on signup</li>
+          <li><span class="check-icon req">●</span>Principal contact: at most one per account; warn if unset for subscription accounts</li>
+          <li><span class="check-icon warn">●</span>Shareholders screen settings: persist in user_settings.settings_json; apply on Register of Members UI</li>
+          <li><span class="check-icon done">●</span>Cross-link Actions panel to 2FA, RBAC, permissions, and firm-account — do not duplicate admin/billing flows here</li>
         </ul>
       </div>
     `
@@ -3002,13 +3449,17 @@ const FEATURES = [
     overview: `
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">📋</span> What This Feature Does</div>
-        <div class="c-text">A full suite of company secretarial templates including board minutes, resolutions, company letters, forms and certificates — all pre-populated with your data so you don't re-type anything.</div>
+        <div class="c-text">A full suite of company secretarial templates including board minutes, resolutions, company letters, forms and certificates — all pre-populated with your data so you don't re-type anything. Shown as <strong>Tab 2 — Template Library</strong> on the Documents page (same route as Document Library).</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🖥️</span> Template Library UI (Inform Direct parity)</div>
+        <div class="c-text">Left nav: <strong>All Templates</strong> and <strong>Favourite Templates</strong> with counts. Search bar. Filters: <strong>Category</strong> (minutes, resolutions, letters, accounts, etc.) and <strong>Document Type</strong>. Table columns: <strong>Type</strong> · <strong>Template Name</strong> · <strong>Cost</strong> (Free / £5 PAYG) · <strong>Preview</strong> · <strong>Actions</strong> (Generate). Pagination default 25 rows per page.</div>
       </div>
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">🔄</span> User Journey</div>
         <div class="flow-steps">
-          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Browse Library</div><div class="step-desc">User searches 400+ templates by category (minutes, resolutions, letters).</div></div></div>
-          <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Select Template</div><div class="step-desc">Pick document; company data pre-merged into fields.</div></div></div>
+          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Browse Library</div><div class="step-desc">User opens Template Library tab; filters by category or document type, or views favourites only.</div></div></div>
+          <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Select Template</div><div class="step-desc">Pick document; company data pre-merged into fields. Star icon toggles favourite.</div></div></div>
           <div class="flow-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Preview &amp; Edit</div><div class="step-desc">Review generated content; edit optional clauses before finalising.</div></div></div>
           <div class="flow-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Generate PDF</div><div class="step-desc">Final document rendered and saved to Document Library.</div></div></div>
           <div class="flow-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Re-use Anytime</div><div class="step-desc">Same template available for any company in portfolio.</div></div></div>
@@ -3026,6 +3477,26 @@ const FEATURES = [
       </div>
       <div class="content-section"><div class="c-title"><span class="c-title-icon">🏛️</span> Companies House</div><div class="c-text">Templates support transactions but are not themselves filed unless the underlying CH form is submitted.</div></div>
       <div class="content-section"><div class="c-title"><span class="c-title-icon">💷</span> Pricing (Inform Direct)</div><div class="c-text">PAYG: <strong>£5 per document</strong> per standalone template from Template Library. <strong>Unlimited free</strong> for subscribers. Templates bundled with a transaction wizard may be included at no extra charge.</div></div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🗄️</span> Database — template favourites</div>
+        <table class="schema-table">
+          <thead><tr><th>Table: template_favourites</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>user_id</td><td>UUID FK</td><td>→ users</td></tr>
+            <tr><td>template_id</td><td>UUID FK</td><td>→ document_templates</td></tr>
+            <tr><td>created_at</td><td>TIMESTAMP</td><td>Unique (user_id, template_id)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Template Library API (tab 2)</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/templates</span><div class="route-desc">Query: <code>q</code>, <code>category</code>, <code>documentType</code>, <code>favouritesOnly</code>, <code>page</code>, <code>limit</code> (default 25).</div></div>
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/templates/{templateId}/favourite</span><div class="route-desc">Toggle favourite for current user.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/templates/{templateId}/preview</span><div class="route-desc">Preview with company merge fields.</div></div>
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/companies/{companyId}/templates/{templateId}/generate</span><div class="route-desc">PAYG charge if applicable → PDF → Document Library.</div></div>
+        </div>
+      </div>
       
     `,
     arch: `
@@ -3033,6 +3504,8 @@ const FEATURES = [
         <div class="c-title"><span class="c-title-icon">✅</span> Compliance &amp; Implementation Notes</div>
         <ul class="checklist">
           <li><span class="check-icon req">●</span>Pre-populate from company/transaction data</li>
+          <li><span class="check-icon req">●</span>Favourite templates per user (template_favourites table)</li>
+          <li><span class="check-icon req">●</span>Category + document type filters; paginated table with Cost/Preview/Actions</li>
           <li><span class="check-icon done">●</span>Save generated templates to Document Library</li>
           <li><span class="check-icon warn">●</span>Micro-entity accounts wizard includes certain templates at no extra fee when selected in-wizard</li>
         </ul>
@@ -3159,53 +3632,88 @@ const FEATURES = [
   icon: '⬇️',
   color: '#FF7EB6',
   colorDim: '#3D1228',
-  desc: 'Add an existing company in under a minute — Inform Direct pulls the company details straight from Companies House so you don\'t have to enter them manually.',
-  tags: ['CH Public API', 'Company Import', 'Onboarding'],
-  complexity: 'Low',
-  apiCount: 1,
-  dbTables: 3,
+  desc: 'Top nav Import Company opens a 6-step Setup wizard — search by name or number, CH auth code, dedupe persons/addresses, summary. Pulls live data from Companies House in under a minute.',
+  tags: ['Setup Wizard', 'CH Public API', 'Name Search', 'Onboarding'],
+  complexity: 'Medium',
+  apiCount: 4,
+  dbTables: 5,
   content: {
     overview: `
       <div class="content-section">
-        <div class="c-title"><span class="c-title-icon">📋</span> What This Feature Does</div>
-        <div class="c-text">Add an existing company in under a minute — Inform Direct pulls the company details straight from Companies House so you don't have to enter them manually.</div>
+        <div class="c-title"><span class="c-title-icon">🖥️</span> Import Company — 6-step Setup wizard (Inform Direct parity)</div>
+        <div class="c-text">Top nav: grey <strong>Import Company</strong> button opens a full-screen <strong>SETUP</strong> modal with a 6-step progress bar, step content centre-left, and <strong>Actions</strong> panel (Cancel) right. Route: <code>/import/setup?step=1..6</code>. Also reachable from portfolio dashboard. Not part of Account or Your Profile tabs.</div>
       </div>
       <div class="content-section">
-        <div class="c-title"><span class="c-title-icon">🔄</span> User Journey</div>
+        <div class="c-title"><span class="c-title-icon">📋</span> Wizard steps</div>
         <div class="flow-steps">
-          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Enter CH Number</div><div class="step-desc">User types 8-digit Companies House company number.</div></div></div>
-          <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Fetch from CH</div><div class="step-desc">System pulls name, status, officers, PSCs, address from Public API.</div></div></div>
-          <div class="flow-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Create Record</div><div class="step-desc">Company and related entities created in local database.</div></div></div>
-          <div class="flow-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Set Deadlines</div><div class="step-desc">Confirmation statement and accounts dates loaded from CH data.</div></div></div>
-          <div class="flow-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Portfolio Ready</div><div class="step-desc">Company appears on portfolio dashboard in under one minute.</div></div></div>
+          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Import Company</div><div class="step-desc">Label: <em>"Enter the company name or number of the company you wish to import"</em>. Text field: <strong>Company name or registration number</strong> with CH typeahead (see <a href="#" onclick="event.preventDefault();openModal('name-checker')">Company Name Checker</a>). Toggle: <strong>Registered at Companies House?</strong> (Yes/No). If <strong>No</strong> → redirect to <a href="#" onclick="event.preventDefault();openModal('sole-trader')">Sole Trader &amp; Non-CH Entities</a>. Green <strong>Import</strong> button advances to step 2.</div></div></div>
+          <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Authentication code</div><div class="step-desc">Enter the 6-digit Companies House <strong>authentication code</strong> for the company. Required to file via software; stored encrypted (KMS). Option to import another company if code unavailable. Link: help article for requesting code from CH.</div></div></div>
+          <div class="flow-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Fetch &amp; confirm</div><div class="step-desc">System pulls profile, officers, PSCs, share capital, filing history from CH Public API. User confirms the match (name, number, status). Duplicate portfolio check — warn if company already imported.</div></div></div>
+          <div class="flow-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Duplicate persons</div><div class="step-desc">Review officers/shareholders/PSCs for duplicate individuals or corporates across CH records and existing portfolio. Merge or split records; override Inform Direct assumptions where needed.</div></div></div>
+          <div class="flow-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Addresses</div><div class="step-desc">Validate address completeness — missing building name/number shows red ring. Merge duplicate addresses (same person, multiple formats) to simplify future admin.</div></div></div>
+          <div class="flow-step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Summary</div><div class="step-desc">Review all data. If steps 4–5 changed material CH data (not minor nationality/residence tweaks), offer <strong>Send now</strong> (file TM/PSC updates) or <strong>Resolve later</strong> (creates data discrepancy on company dashboard). Green <strong>Proceed to dashboard</strong> completes import — company appears on <a href="#" onclick="event.preventDefault();openModal('portfolio')">Portfolio Dashboard</a> with deadlines populated.</div></div></div>
         </div>
       </div>
-      
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">💷</span> Pricing (Inform Direct)</div>
+        <div class="c-text"><strong>Free</strong> on PAYG and Subscription. PAYG limited to <strong>10 companies</strong> in portfolio; subscribers unlimited. Subscription recalculates monthly fee when import adds a company.</div>
+      </div>
     `,
     dev: `
       <div class="content-section">
-        <div class="info-box info"><span class="info-icon">✓</span><strong>Verified product specification</strong> — Sourced from <a href="https://www.informdirect.co.uk" target="_blank" rel="noopener">informdirect.co.uk</a> and <a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" rel="noopener">Companies House</a> (checked June 2026). Inform Direct does not publish internal API routes; this tab documents official behaviour, forms, and fees.</div>
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Page routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/import/setup</span><div class="route-desc">Setup wizard shell. Query <code>step=1..6</code>. Modal overlay; Cancel returns to portfolio.</div></div>
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/companies/search</span><div class="route-desc">Step 1 typeahead: <code>?q=</code> name or number → CH Public API <code>/search/companies</code>.</div></div>
+        </div>
       </div>
       <div class="content-section">
-        <div class="c-title"><span class="c-title-icon">📋</span> Inform Direct Capability</div>
-        <div class="c-text">Import an existing UK company in under a minute by pulling data from the Companies House public register.</div>
+        <div class="c-title"><span class="c-title-icon">🗄️</span> Database Schema</div>
+        <table class="schema-table">
+          <thead><tr><th>Table: import_sessions</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td>UUID PK</td><td>Wizard session</td></tr>
+            <tr><td>user_id</td><td>UUID FK</td><td></td></tr>
+            <tr><td>step</td><td>INTEGER</td><td>1–6</td></tr>
+            <tr><td>ch_number</td><td>VARCHAR(8) NULL</td><td>Set at step 1</td></tr>
+            <tr><td>is_ch_registered</td><td>BOOLEAN</td><td>From step 1 toggle</td></tr>
+            <tr><td>auth_code_enc</td><td>TEXT NULL</td><td>KMS-encrypted at step 2</td></tr>
+            <tr><td>ch_snapshot_json</td><td>JSONB</td><td>Raw CH pull at step 3</td></tr>
+            <tr><td>dedupe_decisions_json</td><td>JSONB</td><td>Steps 4–5 merge/split choices</td></tr>
+            <tr><td>status</td><td>ENUM</td><td>in_progress | completed | cancelled</td></tr>
+          </tbody>
+        </table>
       </div>
-      <div class="content-section"><div class="c-title"><span class="c-title-icon">🏛️</span> Companies House</div><div class="c-text">Uses Companies House Public Data API to fetch company profile, officers, PSCs, and filing history.</div></div>
-      <div class="content-section"><div class="c-title"><span class="c-title-icon">💷</span> Pricing (Inform Direct)</div><div class="c-text"><strong>Free</strong>. PAYG users limited to <strong>10 companies</strong> in portfolio; subscribers unlimited.</div></div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Internal API Routes</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/import/sessions</span><div class="route-desc">Start wizard (step 1): company name/number + is_ch_registered.</div></div>
+          <div class="api-route"><span class="method PATCH">PATCH</span><span class="route-path">/api/import/sessions/{id}</span><div class="route-desc">Advance step: auth code (step 2), confirm fetch (step 3), person merges (step 4), address fixes (step 5).</div></div>
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/import/sessions/{id}/complete</span><div class="route-desc">Step 6: create company + related records, portfolio_access, deadlines; optional CH correction filings queue.</div></div>
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/portfolio/import</span><div class="route-desc">Legacy/quick import by CH number only (used from portfolio inline) — same backend as wizard step 3+.</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="info-box info"><span class="info-icon">✓</span><strong>Verified product specification</strong> — Sourced from <a href="https://www.informdirect.co.uk" target="_blank" rel="noopener">informdirect.co.uk</a> support articles (Setup wizard steps 4–5, portfolio import) and <a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" rel="noopener">Companies House</a> (June 2026).</div>
+      </div>
+      <div class="content-section"><div class="c-title"><span class="c-title-icon">🏛️</span> Companies House</div><div class="c-text">Uses Public Data API for search and profile import; authentication code required for Filing API submissions during optional step 6 corrections.</div></div>
       <div class="content-section"><div class="c-title"><span class="c-title-icon">🔌</span> External Integrations</div>
         <div class="third-party">
           <div class="third-party-header"><span class="tp-icon">🔌</span><span class="tp-name">Companies House Public Data API</span><span class="tp-badge" style="background:#1A3A23;color:#3FB950;border:1px solid #3FB950">FREE</span></div>
-          <div class="tp-desc">Company profile import.</div>
-          
+          <div class="tp-desc">Step 1 search + step 3 full profile, officers, PSCs, filing history import.</div>
         </div></div>
     `,
     arch: `
       <div class="content-section">
-        <div class="c-title"><span class="c-title-icon">✅</span> Compliance &amp; Implementation Notes</div>
+        <div class="c-title"><span class="c-title-icon">✅</span> Implementation Checklist</div>
         <ul class="checklist">
-          <li><span class="check-icon req">●</span>Requires company number and authentication code for future filings</li>
-          <li><span class="check-icon done">●</span>Populate portfolio and registers from CH data</li>
-          <li><span class="check-icon warn">●</span>PAYG 10-company limit</li>
+          <li><span class="check-icon req">●</span>6-step Setup modal with progress bar (1–6) matching Inform Direct layout; Cancel in Actions panel</li>
+          <li><span class="check-icon req">●</span>Step 1: name OR number search with CH typeahead; Registered at CH? toggle routes non-CH to sole-trader flow</li>
+          <li><span class="check-icon req">●</span>Encrypt authentication code at rest; never log or expose in API responses</li>
+          <li><span class="check-icon req">●</span>Steps 4–5: person dedupe + address validation before creating local records</li>
+          <li><span class="check-icon warn">●</span>Step 6: material CH data fixes → optional filing or "Resolve later" discrepancy flag</li>
+          <li><span class="check-icon req">●</span>Enforce PAYG 10-company limit before step 1 Import; block duplicate CH numbers in portfolio</li>
+          <li><span class="check-icon done">●</span>Populate registers, deadlines, and portfolio from CH snapshot on complete</li>
         </ul>
       </div>
     `
@@ -3397,7 +3905,11 @@ const FEATURES = [
     overview: `
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">📋</span> What This Feature Does</div>
-        <div class="c-text">Export spreadsheet reports of officers, PSCs, and addresses across your entire client portfolio — useful for reviewing compliance records and identifying issues. <strong>Not available on PAYG.</strong> Portfolio XLS reports included on Subscription.</div>
+        <div class="c-text">Export spreadsheet reports of officers, PSCs, and addresses across your entire client portfolio — useful for reviewing compliance records and identifying issues. Shown as <strong>Tab 3 — Reports</strong> on the Documents page. <strong>Not available on PAYG.</strong> Portfolio XLS reports included on Subscription.</div>
+      </div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🖥️</span> Reports Tab UI</div>
+        <div class="c-text">Inform Direct lists report types on the third tab — not mixed with document files. Each report row/card: name, short description, subscription badge, <strong>Generate</strong> or <strong>Download XLS</strong> button. Standard reports: <strong>Officers</strong>, <strong>PSCs</strong>, <strong>Service addresses / registered addresses</strong>. Scope: whole portfolio or filtered company subset.</div>
       </div>
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">🔄</span> User Journey</div>
@@ -3421,12 +3933,21 @@ const FEATURES = [
       </div>
       <div class="content-section"><div class="c-title"><span class="c-title-icon">🏛️</span> Companies House</div><div class="c-text">Data sourced from Inform Direct records synced with Companies House.</div></div>
       <div class="content-section"><div class="c-title"><span class="c-title-icon">💷</span> Pricing (Inform Direct)</div><div class="c-text"><strong>Not available on PAYG.</strong> Portfolio XLS reports included on Subscription.</div></div>
+      <div class="content-section">
+        <div class="c-title"><span class="c-title-icon">🛣️</span> Reports tab API (tab 3)</div>
+        <div class="api-routes">
+          <div class="api-route"><span class="method GET">GET</span><span class="route-path">/api/reports/catalogue</span><div class="route-desc">Report types: officers, pscs, addresses — subscriptionRequired flag each.</div></div>
+          <div class="api-route"><span class="method POST">POST</span><span class="route-path">/api/reports/{type}/export</span><div class="route-desc">Optional companyIds[] filter → XLS download URL or async job.</div></div>
+        </div>
+      </div>
       
     `,
     arch: `
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">✅</span> Compliance &amp; Implementation Notes</div>
         <ul class="checklist">
+          <li><span class="check-icon req">●</span>Reports tab: catalogue UI with Generate/Download per report type</li>
+          <li><span class="check-icon req">●</span>Gate export when account is PAYG-only</li>
           <li><span class="check-icon done">●</span>Export officers, PSCs, addresses</li>
           <li><span class="check-icon req">●</span>Useful for bulk compliance review</li>
           <li><span class="check-icon req">●</span>Subscription required</li>
@@ -3458,7 +3979,7 @@ const FEATURES = [
       <div class="content-section">
         <div class="c-title"><span class="c-title-icon">🔄</span> User Journey</div>
         <div class="flow-steps">
-          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Register App</div><div class="step-desc">Developer obtains API credentials from account settings.</div></div></div>
+          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Register App</div><div class="step-desc">Account owner creates API credentials from Account → Manage API keys.</div></div></div>
           <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">OAuth2 Auth</div><div class="step-desc">Client credentials or auth code flow for secure access.</div></div></div>
           <div class="flow-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">CRUD Companies</div><div class="step-desc">Add/remove companies and fetch high-level company details.</div></div></div>
           <div class="flow-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Rate Limits</div><div class="step-desc">Requests throttled per API key; 429 returned when exceeded.</div></div></div>
@@ -3686,7 +4207,7 @@ const FEATURES = [
           <div class="flow-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Stripe Billing</div><div class="step-desc">Recurring subscription with automatic renewal.</div></div></div>
           <div class="flow-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Unlimited Transactions</div><div class="step-desc">All filings and 400+ templates included.</div></div></div>
           <div class="flow-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Premium Features</div><div class="step-desc">Branding, bulk export, API access unlocked.</div></div></div>
-          <div class="flow-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Self-Service Portal</div><div class="step-desc">User upgrades/downgrades via billing settings.</div></div></div>
+          <div class="flow-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Self-Service Portal</div><div class="step-desc">Upgrade/downgrade and invoices via <a href="#" onclick="event.preventDefault();openModal('firm-account')">Firm Account Settings</a> → Stripe Customer Portal.</div></div></div>
         </div>
       </div>
       
@@ -4252,7 +4773,7 @@ function renderInformGaps() {
       </div>
       <div class="cm-totals">
         <strong>Summary:</strong> ${total} post-launch gap${total !== 1 ? 's' : ''} — formation commercial packaging, physical fulfilment, address services, LLP, and live wizard price tiers.
-        Everything else Inform Direct offers at launch is in the <a href="blueprint.html">Product Blueprint</a> Phase 1 modules or the 46 feature cards.
+        Everything else Inform Direct offers at launch is in the <a href="blueprint.html">Product Blueprint</a> Phase 1 modules or the 49 feature cards.
         Source: <a href="https://www.informdirect.co.uk" target="_blank" rel="noopener">informdirect.co.uk</a> (June 2026).
       </div>
     </div>`;

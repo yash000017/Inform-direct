@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK CoSec Platform — Frontend UX Blueprint (Better Than Inform Direct)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #080B10; --bg2: #0F1419; --bg3: #161D27; --bg4: #1E2836;
+  --border: #2A3544; --border2: #3D4F66;
+  --text: #F0F4F8; --text2: #94A3B8; --text3: #64748B;
+  --accent: #3B82F6; --accent-dim: #1E3A5F; --accent-glow: rgba(59,130,246,0.15);
+  --green: #22C55E; --green-dim: #14532D;
+  --amber: #F59E0B; --amber-dim: #78350F;
+  --purple: #A855F7; --purple-dim: #581C87;
+  --coral: #F43F5E; --coral-dim: #881337;
+  --cyan: #06B6D4;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 12px; --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scrollbar-color: var(--border2) var(--bg); scrollbar-width: thin; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.55; font-size: 14px; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, .mono { font-family: var(--mono); font-size: 12px; background: var(--bg4); padding: 2px 6px; border-radius: 4px; color: var(--cyan); }
+
+/* Header */
+.site-header {
+  background: rgba(15,20,25,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 56px; display: grid; grid-template-columns: 240px 1fr auto;
+  position: sticky; top: 0; z-index: 300;
+}
+.header-brand { display: flex; align-items: center; gap: 10px; padding: 0 1rem; border-right: 1px solid var(--border); }
+.logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), var(--purple)); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.logo-text { font-size: 13px; font-weight: 700; }
+.logo-sub { font-size: 10px; color: var(--text3); }
+.header-search { display: flex; align-items: center; padding: 0 1rem; }
+.header-search input {
+  width: 100%; max-width: 420px; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 20px; padding: 8px 16px 8px 36px; color: var(--text); font-size: 13px;
+}
+.header-search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.header-nav { display: flex; align-items: center; gap: 12px; padding: 0 1rem; font-size: 12px; }
+.header-nav a { color: var(--text2); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); white-space: nowrap; }
+.header-nav a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+
+.layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: calc(100vh - 56px); }
+.sidebar {
+  background: var(--bg2); border-right: 1px solid var(--border);
+  position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; padding: 1rem 0;
+}
+.sidebar-title { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; padding: 12px 1rem 6px; }
+.side-link {
+  display: block; padding: 6px 1rem; font-size: 12px; color: var(--text2);
+  border-left: 2px solid transparent; cursor: pointer;
+}
+.side-link:hover, .side-link.active { color: var(--accent); background: var(--accent-glow); border-left-color: var(--accent); }
+.side-link .count { float: right; font-size: 10px; color: var(--text3); background: var(--bg4); padding: 1px 6px; border-radius: 10px; }
+
+.main { padding: 1.5rem 1.75rem 4rem; min-width: 0; }
+
+/* Hero */
+.hero { margin-bottom: 2rem; }
+.hero h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; }
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero p { color: var(--text2); max-width: 920px; font-size: 15px; }
+.stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.stat { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 18px; text-align: center; min-width: 100px; }
+.stat-num { font-size: 22px; font-weight: 700; color: var(--accent); }
+.stat-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.section { margin-bottom: 3rem; scroll-margin-top: 70px; }
+.section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.section-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.section-head h2 { font-size: 20px; font-weight: 700; }
+.section-head span { margin-left: auto; font-size: 12px; color: var(--text3); }
+
+.badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; border: 1px solid var(--border2); color: var(--text2); }
+.badge-phase1 { border-style: dashed; }
+.badge-phase2 { opacity: 0.75; }
+.badge-edge { border-style: dotted; }
+
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+@media (max-width: 900px) { .compare-grid { grid-template-columns: 1fr; } }
+.compare-col { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; }
+.compare-col h4 { font-size: 12px; margin-bottom: 10px; color: var(--text); }
+.compare-col.us { border-style: solid; border-width: 2px; border-color: var(--border2); }
+.compare-col ul { list-style: none; font-size: 12px; color: var(--text2); }
+.compare-col li { padding: 5px 0; border-bottom: 1px solid var(--border); }
+.compare-col li:last-child { border-bottom: none; }
+
+.principle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin: 16px 0; }
+.principle { background: var(--bg2); border: 1px dashed var(--border2); border-radius: var(--radius-sm); padding: 16px; }
+.principle h4 { font-size: 14px; margin-bottom: 6px; }
+.principle p { font-size: 12px; color: var(--text2); }
+
+/* Screen cards */
+.screen-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 1.5rem; overflow: hidden; scroll-margin-top: 80px;
+}
+.screen-card:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.screen-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px;
+}
+.screen-header h3 { font-size: 16px; font-weight: 700; flex: 1 1 200px; }
+.screen-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.screen-body { display: grid; grid-template-columns: 1fr 320px; gap: 0; }
+@media (max-width: 1100px) { .screen-body { grid-template-columns: 1fr; } }
+.screen-wireframe { padding: 20px; background: var(--bg3); border-right: 1px solid var(--border); min-height: 280px; }
+@media (max-width: 1100px) { .screen-wireframe { border-right: none; border-bottom: 1px solid var(--border); } }
+.screen-spec { padding: 20px; font-size: 13px; }
+.screen-spec h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin: 14px 0 8px; }
+.screen-spec h4:first-child { margin-top: 0; }
+.screen-spec ul { list-style: none; }
+.screen-spec li { padding: 4px 0 4px 14px; position: relative; color: var(--text2); font-size: 12px; }
+.screen-spec li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.feature-ref { font-size: 11px; color: var(--purple); margin-top: 12px; }
+
+/* Wireframe chrome */
+.wf { background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; font-size: 9px; }
+.wf-topnav {
+  display: flex; align-items: center; gap: 4px; padding: 6px 8px;
+  background: #1a2332; border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.wf-topnav-item { padding: 3px 7px; border-radius: 4px; color: var(--text3); white-space: nowrap; }
+.wf-topnav-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+.wf-topnav-item.primary { background: var(--green-dim); color: var(--green); }
+.wf-body { display: flex; min-height: 200px; }
+.wf-sidebar { width: 28%; min-width: 70px; background: var(--bg2); border-right: 1px solid var(--border); padding: 8px 6px; }
+.wf-sidebar-item { padding: 4px 6px; margin-bottom: 2px; border-radius: 4px; color: var(--text3); }
+.wf-sidebar-item.active { background: var(--accent-glow); color: var(--accent); border-left: 2px solid var(--accent); }
+.wf-main { flex: 1; padding: 10px; }
+.wf-title { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.wf-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.wf-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.wf-panel { background: var(--bg4); border: 1px dashed var(--border2); border-radius: 6px; padding: 8px; min-height: 60px; }
+.wf-panel-label { font-size: 8px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.wf-field { height: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; margin-bottom: 4px; }
+.wf-btn-row { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+.wf-btn { padding: 4px 10px; border-radius: 4px; font-size: 8px; font-weight: 600; }
+.wf-btn-primary { background: var(--text); color: var(--bg); font-weight: 700; }
+.wf-btn-secondary { background: var(--bg4); color: var(--text2); border: 1px solid var(--border2); }
+.wf-icon-rail { width: 36px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; padding: 8px 4px; align-items: center; }
+.wf-icon-rail span { width: 24px; height: 24px; border-radius: 6px; background: var(--bg4); border: 1px solid var(--border); }
+.wf-icon-rail span.on { border-style: solid; border-width: 2px; }
+.wf-cmdk { background: var(--bg4); border: 1px dashed var(--border2); border-radius: 8px; padding: 8px 12px; margin: 8px; font-size: 9px; color: var(--text3); }
+.wf-timeline { border-left: 2px solid var(--border2); margin-left: 8px; padding-left: 10px; }
+.wf-timeline-item { margin-bottom: 6px; font-size: 8px; color: var(--text3); }
+.wf-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.wf-rail-right { width: 26%; min-width: 70px; border-left: 1px solid var(--border); padding: 8px; background: var(--bg2); }
+.wf-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 8px; flex-wrap: wrap; }
+.wf-tab { padding: 4px 8px; color: var(--text3); border-bottom: 2px solid transparent; }
+.wf-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.wf-table { width: 100%; border-collapse: collapse; font-size: 8px; }
+.wf-table th, .wf-table td { border: 1px solid var(--border); padding: 4px 6px; text-align: left; color: var(--text3); }
+.wf-table th { background: var(--bg4); }
+.wf-price-panel { width: 22%; min-width: 60px; background: var(--bg2); border-left: 1px solid var(--border); padding: 8px; }
+.wf-price-total { font-size: 12px; font-weight: 700; color: var(--green); margin: 6px 0; }
+.wf-modal-overlay { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 8px; }
+.wf-modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; max-width: 100%; }
+.wf-stepper { display: flex; gap: 4px; margin-bottom: 10px; }
+.wf-step { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg4); color: var(--text3); font-weight: 700; }
+.wf-step.active { background: var(--accent); color: #fff; }
+.wf-step.done { background: var(--green-dim); color: var(--green); }
+
+/* Route map */
+.route-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+.route-table th, .route-table td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+.route-table th { background: var(--bg3); color: var(--text3); font-size: 11px; text-transform: uppercase; }
+.route-table tr:hover td { background: var(--bg3); }
+
+.sitemap { font-family: var(--mono); font-size: 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; line-height: 1.8; color: var(--text2); overflow-x: auto; white-space: pre; }
+
+.info-box { background: var(--accent-dim); border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 1.5rem; font-size: 13px; color: var(--text2); }
+.info-box strong { color: var(--text); }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-brand">
+    <div class="logo-icon">🎨</div>
+    <div>
+      <div class="logo-text">Frontend UX Blueprint</div>
+      <div class="logo-sub">Better UX · full feature coverage · no visual lock-in yet</div>
+    </div>
+  </div>
+  <div class="header-search">
+    <input type="text" id="globalSearch" placeholder="Search screens, routes, modules…" oninput="filterScreens()">
+  </div>
+  <nav class="header-nav">
+    <a href="index.html">📋 Feature Guide</a>
+    <a href="blueprint.html">🗺️ Build Plan</a>
+    <a href="infrastructure.html">💷 Infra Cost</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const PHASE1 = 'phase1';
+const PHASE2 = 'phase2';
+
+const DESIGN = {
+  note: 'Visual identity (colours, typography, brand) is intentionally deferred — wireframes use neutral placeholders only.',
+  principles: [
+    { title: 'Command-first', desc: '⌘K universal search launches companies, filings, templates, and settings — no hunting through 7 top-nav buttons.' },
+    { title: 'Deadlines as the homepage', desc: 'Command Centre leads with "what needs doing" across CH + HMRC, not a flat company table like Inform Direct.' },
+    { title: 'One company hub', desc: 'Scrollable hub with pill sub-nav + smart action rail — replaces 10 disconnected horizontal tabs.' },
+    { title: 'Preview before file', desc: 'Every filing wizard shows live CH payload preview side-by-side with the form.' },
+    { title: 'Unified settings', desc: 'Single Settings area (Firm · Team · Billing · You) — not split Account vs Profile in main nav.' },
+    { title: 'Contextual, not modal', desc: 'Import and short tasks use slide-over panels; only long wizards go full-page.' },
+  ],
+};
+
+const UX_COMPARE = [
+  { area: 'Main navigation', them: '7-item top bar (Portfolio, Form, Import, Docs, Account, Profile…)', us: 'Icon rail (5 zones) + ⌘K command palette + contextual header actions' },
+  { area: 'Home screen', them: 'Sortable company table', us: 'Command Centre: action queue, deadline timeline, compliance heatmap, quick create' },
+  { area: 'Company view', them: '10+ horizontal tabs, actions in sidebar list', us: 'Company Hub: unified timeline, pill nav (Overview · People · Cap table · Compliance · Files), sticky "Do next" rail' },
+  { area: 'Deadlines', them: 'Separate rows per date type', us: 'Single visual timeline — CS, accounts, VAT, custom on one axis' },
+  { area: 'Import', them: 'Full-screen SETUP modal, 6 steps', us: 'Slide-over flow from anywhere; dedupe steps inline with diff view' },
+  { area: 'Formation', them: 'Left sidebar + right price panel', us: 'Horizontal stepper + package comparison matrix; sticky live total footer' },
+  { area: 'Documents', them: '3 rigid tabs at top nav level', us: 'Documents hub inside app: smart folders + filter chips (Library · Templates · Reports)' },
+  { area: 'Account settings', them: 'Account tab + Profile tab in main nav', us: 'Settings hub: /settings/{firm|team|billing|you|integrations}' },
+  { area: 'Filings', them: 'Form → submit', us: 'Split pane: form + CH preview + validation checklist' },
+  { area: 'Alerts', them: 'Table at bottom of dashboard', us: 'Notification centre + inline on timeline; resolve in context' },
+];
+
+const GLOBAL_SHELL = {
+  iconRail: [
+    { label: 'Command Centre', route: '/', icon: '◎', feature: 'portfolio', desc: 'Home — deadlines, queue, heatmap' },
+    { label: 'Companies', route: '/companies', icon: '▦', feature: 'portfolio', desc: 'Browse/search all entities' },
+    { label: 'Work', route: '/work', icon: '⚡', feature: null, desc: 'In-progress drafts, approvals, filings queue' },
+    { label: 'Documents', route: '/documents', icon: '📄', feature: 'document-library', desc: 'Library, templates, reports' },
+    { label: 'Settings', route: '/settings', icon: '⚙', feature: 'firm-account', desc: 'Firm, team, billing, preferences' },
+  ],
+  globalWidgets: [
+    '⌘K Command palette — search companies, actions ("file CS for Acme"), templates, navigate anywhere',
+    '+ Create menu (header) — Form company · Import · Add sole trader · From template',
+    'Notification drawer (right) — filings, sync discrepancies, team mentions',
+    'Help ? contextual — step-level in wizards, not a separate support tab hunt',
+    'User avatar menu — profile, 2FA, logout (not "Your Profile" top-nav item)',
+    'Mobile: bottom tab bar (Home · Companies · + · Docs · Settings)',
+  ],
+  headerContext: 'Page title + breadcrumbs update per route; primary action button is contextual (e.g. "File CS" only on company hub when due)',
+};
+
+const SCREEN_GROUPS = [
+  {
+    id: 'ux-vision',
+    icon: '✨',
+    color: 'var(--border2)',
+    title: 'UX Vision & Navigation Model',
+    screens: [],
+  },
+  {
+    id: 'auth',
+    icon: '🔑',
+    color: '#A855F7',
+    title: 'Authentication & Onboarding',
+    screens: [
+      { id: 'login', title: 'Sign In', route: '/login', phase: PHASE1, feature: 'two-factor',
+        layout: 'auth',
+        modules: ['Email + password form', 'Forgot password link', 'Remember me', 'Redirect to MFA if enrolled'],
+        components: ['Cognito hosted UI or custom form', 'Error banner', 'Session timeout notice'],
+        actions: ['Sign in', 'Create account'] },
+      { id: 'signup', title: 'Register / Start Now', route: '/register', phase: PHASE1, feature: null,
+        layout: 'auth',
+        modules: ['My own company vs Acting for clients path', 'Email, name, first company search', 'Terms + privacy checkbox'],
+        components: ['Company name typeahead (CH search)', 'Plan selector PAYG default'],
+        actions: ['Sign up', 'Continue to email verification'] },
+      { id: 'mfa', title: 'Two-Factor Challenge', route: '/login/mfa', phase: PHASE1, feature: 'two-factor',
+        layout: 'auth',
+        modules: ['6-digit TOTP input', 'SMS fallback', 'Recovery code link'],
+        components: ['Authenticator app prompt'],
+        actions: ['Verify', 'Use recovery code'] },
+      { id: 'invite', title: 'Accept Invitation', route: '/invitations/{token}', phase: PHASE1, feature: 'user-management',
+        layout: 'auth',
+        modules: ['Token validation', 'Create password or link existing account', 'Welcome checklist'],
+        components: ['Firm name display', 'Assigned companies preview'],
+        actions: ['Accept invite'] },
+      { id: 'onboarding', title: 'Interactive Onboarding Tour', route: '/onboarding', phase: PHASE1, feature: 'guides',
+        layout: 'overlay',
+        modules: ['Sample company demo', 'Import walkthrough', 'Progress checklist overlay'],
+        components: ['Product tour tooltips on portfolio + import'],
+        actions: ['Skip', 'Next step', 'Complete'] },
+    ],
+  },
+  {
+    id: 'portfolio',
+    icon: '📊',
+    color: '#60A5FA',
+    title: 'Command Centre & Company Hub',
+    screens: [
+      { id: 'command-centre', title: 'Command Centre (Home)', route: '/', phase: PHASE1, feature: 'portfolio',
+        layout: 'command-centre',
+        modules: [
+          'Hero strip: "N actions today" — clickable queue (file CS, accounts overdue, sync fixes)',
+          'Deadline timeline — all portfolio companies on one horizontal/vertical axis (CS · accounts · VAT · custom)',
+          'Compliance heatmap grid — RAG per company, click to filter',
+          'Quick create row: Form · Import · Template · Report',
+          'Recent activity feed (firm-wide)',
+          'Optional: switch to classic table view for accountants who prefer spreadsheets',
+        ],
+        components: ['ActionQueue', 'DeadlineTimeline', 'ComplianceHeatmap', 'ViewToggle table|timeline'],
+        actions: ['Start filing from queue', '⌘K search', '+ Create', 'Open company hub'] },
+      { id: 'companies-browse', title: 'Companies — Browse & Search', route: '/companies', phase: PHASE1, feature: 'portfolio',
+        layout: 'portfolio',
+        modules: [
+          'Dense table OR card grid toggle',
+          'Filters: status, compliance RAG, next deadline, assigned user',
+          'Bulk: XLS export, tag, assign',
+        ],
+        components: ['CompanyDataTable', 'FilterChipBar'],
+        actions: ['Open hub', 'Import', 'Bulk export'] },
+      { id: 'company-hub', title: 'Company Hub (replaces tab sprawl)', route: '/companies/{id}', phase: PHASE1, feature: 'company-dashboard',
+        layout: 'company-hub',
+        modules: [
+          'Sticky header: name · number · status · ⌘K scoped to this company',
+          'Pill nav (scroll-spy): Overview · People · Cap table · Compliance · Files · Activity',
+          'Overview section: unified deadline timeline (not 3 separate columns), key facts card, notes inline',
+          'People: officers + PSCs + shareholders in one searchable list with role chips (not 4 tabs)',
+          'Cap table: live ownership viz (Phase 2) + share classes + transaction history',
+          'Compliance: filing history, open alerts, CH sync diff, auth code status',
+          'Files: recent docs + link to full library filtered to company',
+          'Right rail (sticky): "Do next" — smart single CTA + secondary links',
+          'Activity: infinite-scroll audit trail (primary, not buried)',
+        ],
+        components: ['CompanyHubShell', 'PillNavScrollSpy', 'DoNextRail', 'UnifiedDeadlineTimeline', 'PeopleUnifiedList'],
+        actions: ['Smart primary CTA', 'Add note', 'Start any filing via ⌘K or + menu'] },
+      { id: 'company-details', title: 'Company Hub — Overview Section', route: '/companies/{id}#overview', phase: PHASE1, feature: 'company-dashboard',
+        layout: 'company-hub',
+        modules: [
+          'Registered name, number, status, jurisdiction, type',
+          'Registered office + SAIL (links to change wizards)',
+          'Registered email, SIC codes, auth code (masked/reveal)',
+          'CH sync status + last synced timestamp',
+          'Custom fields (from firm account config)',
+        ],
+        components: ['EditableSection with pencil icons', 'AddressCard', 'SyncStatusBadge'],
+        actions: ['Change registered office', 'Change email', 'Change ARD', 'Refresh from CH'] },
+      { id: 'company-officers', title: 'Company Hub — People Section', route: '/companies/{id}#people', phase: PHASE1, feature: 'officer-appoint',
+        layout: 'company-hub',
+        modules: ['Unified list: directors, secretaries, PSCs, shareholders with role filter chips', 'IDVT status inline', 'Appoint/resign/change from row menu'],
+        components: ['PeopleUnifiedList', 'VerificationStatusChip'],
+        actions: ['Appoint', 'Resign', 'Change', 'Send identity check'] },
+      { id: 'company-shareholders', title: 'Company Hub — Cap Table Section', route: '/companies/{id}#cap-table', phase: PHASE1, feature: 'share-allotment',
+        layout: 'company-hub',
+        modules: ['Ownership summary · share classes · register of members · allot/transfer/dividend from toolbar'],
+        components: ['CapTableSection', 'ShareholdersTable'],
+        actions: ['Allot', 'Transfer', 'Dividend', 'Print register'] },
+      { id: 'company-share-classes', title: 'Share Classes (within Cap Table)', route: '/companies/{id}#cap-table/classes', phase: PHASE1, feature: 'share-allotment',
+        layout: 'company-hub',
+        modules: ['Embedded in cap table section — not separate top-level tab'],
+        components: ['ShareClassCard'],
+        actions: ['Add class'] },
+      { id: 'company-pscs', title: 'PSCs (within People section)', route: '/companies/{id}#people?filter=psc', phase: PHASE1, feature: 'psc-register',
+        layout: 'company-hub',
+        modules: ['Filter People list to PSCs · nature of control on expand'],
+        components: ['PSCControlBadges'],
+        actions: ['Register PSC', 'Cease PSC'] },
+      { id: 'company-registers', title: 'Company Hub — Compliance Section', route: '/companies/{id}#compliance', phase: PHASE1, feature: 'statutory-registers',
+        layout: 'company-hub',
+        modules: ['Register picker: Members, Directors, Secretaries, PSC, Charges, etc.', 'Print all · Download ZIP', 'Branding preview (subscription)'],
+        components: ['RegisterViewer PDF embed', 'PrintRegistersModal'],
+        actions: ['Print register', 'Bulk print all', 'Auto-update indicator'] },
+      { id: 'company-transactions', title: 'Filings via ⌘K + Do Next Rail', route: '/companies/{id}#overview', phase: PHASE1, feature: null,
+        layout: 'company-hub',
+        modules: [
+          'No separate Transactions tab — filings launch from Do next rail, ⌘K, or People/Cap table row menus',
+          'In-progress drafts surface in /work queue',
+        ],
+        components: ['DoNextRail', 'CommandPalette'],
+        actions: ['Any filing via command palette'] },
+      { id: 'work-queue', title: 'Work — In-Progress Queue', route: '/work', phase: PHASE1, feature: null,
+        layout: 'command-centre',
+        modules: ['Draft filings · pending approvals · failed CH submissions · assigned to me', 'Kanban or list toggle'],
+        components: ['WorkQueueBoard'],
+        actions: ['Resume draft', 'Approve', 'Retry filing'] },
+      { id: 'compliance-score', title: 'Compliance Heatmap (built into home)', route: '/#heatmap', phase: PHASE1, feature: null,
+        layout: 'command-centre',
+        modules: ['RAG grid on Command Centre — not a separate route in Inform Direct style'],
+        components: ['ComplianceHeatmap'],
+        actions: ['Filter companies by risk'] },
+    ],
+  },
+  {
+    id: 'wizards',
+    icon: '🧙',
+    color: '#22C55E',
+    title: 'Multi-Step Wizards',
+    screens: [
+      { id: 'import-wizard', title: 'Import Company — Slide-Over Flow', route: '/import?step=1..6', phase: PHASE1, feature: 'import-company',
+        layout: 'slide-flow',
+        modules: [
+          'Opens from + menu or ⌘K — right slide-over (not full-screen SETUP modal)',
+          'Progress dots in panel header · save & continue later',
+          'Step 1: name/number search + CH toggle',
+          'Steps 2–6: auth code · confirm · person dedupe with side-by-side diff · address merge · summary',
+          'Complete → lands on new Company Hub with celebration + "Do next" hint',
+        ],
+        components: ['SlideOverPanel', 'DedupeDiffView', 'InlineProgressDots'],
+        actions: ['Import', 'Dismiss', 'Proceed to hub'] },
+      { id: 'incorporation', title: 'Formation Flow — Full Page', route: '/form/*', phase: PHASE1, feature: 'new-company',
+        layout: 'formation-flow',
+        modules: [
+          'Horizontal stepper sticky top: Type → Package → Details → People → Extras → Review → Pay',
+          'Package step: comparison matrix cards (not left sidebar)',
+          'Live total sticky footer bar (not right panel)',
+          'People step: combined officers/shareholders/PSC like modern cap-table tools',
+          'Review: split view — summary left, validation checklist right',
+        ],
+        components: ['HorizontalStepper', 'PackageMatrix', 'StickyPriceFooter', 'FormationReviewSplit'],
+        actions: ['Continue', 'Save draft', 'Pay & submit'] },
+      { id: 'cs-wizard', title: 'Confirmation Statement Wizard', route: '/companies/{id}/file/cs01', phase: PHASE1, feature: 'confirmation-statement',
+        layout: 'filing-split',
+        modules: ['Form left · CH CS01 payload preview right · validation checklist footer · pay inline'],
+        components: ['FilingWizardShell', 'CHPayloadPreview'],
+        actions: ['File with CH'] },
+      { id: 'accounts-wizard', title: 'File Accounts Wizard', route: '/companies/{id}/file/accounts', phase: PHASE1, feature: 'file-accounts',
+        layout: 'filing-split',
+        modules: ['Type: dormant / micro / iXBRL upload', 'Balance sheet fields or file upload', 'Client approval step', 'Board minutes template', 'Submit'],
+        components: ['AccountsTypeSelector', 'IXBRLUploadZone'],
+        actions: ['Submit to CH'] },
+      { id: 'officer-wizards', title: 'Officer Wizards (Appoint / Resign / Change)', route: '/companies/{id}/officers/*', phase: PHASE1, feature: 'officer-appoint',
+        layout: 'filing-split',
+        modules: ['Person lookup from portfolio · AP/TM/CH forms · personal code · residential address encrypted · board minutes optional £5'],
+        components: ['OfficerWizard', 'PersonSearchModal'],
+        actions: ['Submit filing'] },
+      { id: 'psc-wizards', title: 'PSC Wizards', route: '/companies/{id}/psc/*', phase: PHASE1, feature: 'psc-register',
+        layout: 'filing-split',
+        modules: ['PSC01–09 flows · nature of control checklist · corporate PSC branch'],
+        components: ['PSCWizard', 'ControlNatureSelector'],
+        actions: ['Register PSC', 'Cease PSC'] },
+      { id: 'share-wizards', title: 'Share Transaction Wizards', route: '/companies/{id}/shares/*', phase: PHASE1, feature: 'share-allotment',
+        layout: 'filing-split',
+        modules: ['Allotment SH01 · Transfer J30 · Dividend vouchers · Certificate generation'],
+        components: ['ShareWizard', 'StampDutyWarning'],
+        actions: ['Allot', 'Transfer', 'Declare dividend'] },
+      { id: 'address-wizards', title: 'Address Change Wizards', route: '/companies/{id}/address/*', phase: PHASE1, feature: 'registered-office',
+        layout: 'filing-split',
+        modules: ['AD01 registered office · AD03/04 SAIL · postcode lookup · jurisdiction validation'],
+        components: ['AddressWizard', 'PostcodeLookup'],
+        actions: ['File AD01'] },
+      { id: 'other-filings', title: 'Other CH Filings', route: '/companies/{id}/file/*', phase: PHASE1, feature: null,
+        layout: 'filing-split',
+        modules: ['Strike-off DS01 · Name change NM01 · Charges MR01 (Phase 2) · Change email · Change ARD AA01'],
+        components: ['GenericFilingWizard'],
+        actions: ['Submit'] },
+    ],
+  },
+  {
+    id: 'documents',
+    icon: '📁',
+    color: '#C084FC',
+    title: 'Documents, Templates & Reports',
+    screens: [
+      { id: 'documents-hub', title: 'Documents Hub', route: '/documents', phase: PHASE1, feature: 'document-library',
+        layout: 'documents-hub',
+        modules: [
+          'Single page — not a top-level nav destination competing with home',
+          'Smart folders: Auto-generated · Uploads · Filing receipts · Favourites',
+          'Filter chips: Library · Templates · Reports (not rigid tabs)',
+          'Global search across all docs + templates',
+          'Storage meter per company when scoped',
+          'Company filter dropdown to scope from hub',
+        ],
+        components: ['SmartFolderGrid', 'FilterChips', 'UnifiedDocSearch', 'TemplateCatalogue', 'ReportsCatalogue'],
+        actions: ['Upload', 'Generate template', 'Run report', 'Bulk ZIP'] },
+      { id: 'template-preview', title: 'Template Preview & Generate', route: '/documents/templates/{id}/preview', phase: PHASE1, feature: 'templates',
+        layout: 'modal-split',
+        modules: ['Merge field preview · edit clauses · PAYG price confirm · save to library'],
+        components: ['TemplatePreviewPane', 'MergeFieldHighlighter'],
+        actions: ['Generate PDF', 'Add to favourites'] },
+      { id: 'doc-viewer', title: 'Document Viewer', route: '/documents/{docId}', phase: PHASE1, feature: 'document-library',
+        layout: 'viewer',
+        modules: ['PDF viewer · tags sidebar · download · delete · link to transaction'],
+        components: ['PDFViewer', 'TagEditor'],
+        actions: ['Download', 'Tag', 'Delete'] },
+    ],
+  },
+  {
+    id: 'account',
+    icon: '🏢',
+    color: 'var(--border2)',
+    title: 'Settings Hub (Firm + You)',
+    screens: [
+      { id: 'settings-hub', title: 'Settings — Unified Hub', route: '/settings', phase: PHASE1, feature: 'firm-account',
+        layout: 'settings-hub',
+        modules: [
+          'Left nav sections: Firm · Team · Billing · Integrations · Preferences (you)',
+          'Replaces Inform Direct split of Account + Your Profile in main navigation',
+          'Firm: legal name, ACSP, presenter, HMRC link, branding, offices, custom fields',
+          'Team: users, invites, approval rules, client portals',
+          'Billing: subscription, invoices, payment method, PAYG history',
+          'Integrations: API keys, HMRC ASA, sender email, webhooks (P2)',
+          'Preferences: profile, 2FA, email prefs, portfolio defaults, shareholder columns',
+        ],
+        components: ['SettingsLayout', 'SettingsNav', 'SettingsSectionRouter'],
+        actions: ['Save section', 'Stripe portal', 'Invite user'] },
+      { id: 'settings-firm', title: 'Settings — Firm', route: '/settings/firm', phase: PHASE1, feature: 'firm-account',
+        layout: 'settings-hub',
+        modules: ['All firm-account fields + edit forms · maps to Inform Direct Account tab content'],
+        components: ['FirmDetailsForm', 'PresenterCodeField', 'HMRCStatusCard'],
+        actions: ['Edit firm details', 'Remove HMRC link'] },
+      { id: 'settings-you', title: 'Settings — Preferences (You)', route: '/settings/you', phase: PHASE1, feature: 'account-profile',
+        layout: 'settings-hub',
+        modules: ['Profile, logins, access rights read-only, email prefs, display prefs — maps to Your Profile sections'],
+        components: ['ProfileForm', 'LoginAuditTable', 'EmailPrefsForm'],
+        actions: ['Change password', 'Enable 2FA'] },
+      { id: 'account-sub-routes', title: 'Settings — Deep Pages', route: '/settings/*', phase: PHASE1, feature: 'firm-account',
+        layout: 'settings-hub',
+        modules: [
+          '/settings/team — users & invites',
+          '/settings/billing/invoices · /settings/billing/card',
+          '/settings/firm/offices · /settings/firm/custom-fields',
+          '/settings/firm/approval · /settings/firm/workflows (P2)',
+          '/settings/integrations/email · /settings/integrations/api-keys',
+          '/settings/firm/client-portals',
+        ],
+        components: ['StandardFormLayout', 'DataTable'],
+        actions: ['Save', 'Revoke key'] },
+    ],
+  },
+  {
+    id: 'billing',
+    icon: '💳',
+    color: '#FBBF24',
+    title: 'Billing & Checkout',
+    screens: [
+      { id: 'stripe-checkout', title: 'Stripe Checkout / Payment Modal', route: '/checkout/*', phase: PHASE1, feature: 'payg',
+        layout: 'modal',
+        modules: ['Line items: ID fee + CH fee + VAT', 'PAYG pre-auth before filing', 'Formation package breakdown', 'Receipt → Document Library'],
+        components: ['StripeEmbeddedCheckout', 'FeeBreakdownTable'],
+        actions: ['Pay', 'Cancel'] },
+      { id: 'subscription-upgrade', title: 'Upgrade to Subscription', route: '/account/upgrade', phase: PHASE1, feature: 'subscription',
+        layout: 'marketing-card',
+        modules: ['Tier calculator by company count', 'Feature comparison PAYG vs Sub', 'Stripe Billing portal link'],
+        components: ['PricingCalculator', 'FeatureCompareTable'],
+        actions: ['Subscribe', 'Manage billing'] },
+    ],
+  },
+  {
+    id: 'security',
+    icon: '🔐',
+    color: '#A855F7',
+    title: 'Security & Admin',
+    screens: [
+      { id: 'manage-users', title: 'Manage Users', route: '/settings/team', phase: PHASE1, feature: 'user-management',
+        layout: 'admin-table',
+        modules: ['User list · invite · per-company access matrix · role dropdown', 'Permission audit log link'],
+        components: ['UserTable', 'InviteUserModal', 'AccessMatrixGrid'],
+        actions: ['Invite user', 'Change permissions', 'Remove user'] },
+      { id: 'permissions-view', title: 'Access Rights (in Settings → You)', route: '/settings/you#access', phase: PHASE1, feature: 'permissions',
+        layout: 'settings-hub',
+        modules: ['Companies list with access level per row'],
+        components: ['AccessRightsTable'],
+        actions: [] },
+      { id: 'api-keys', title: 'Manage API Keys', route: '/account/api-keys', phase: PHASE2, feature: 'api-beta',
+        layout: 'admin-table',
+        modules: ['Create key · scopes · rate limit · revoke · usage stats'],
+        components: ['APIKeyTable', 'CreateKeyModal'],
+        actions: ['Create key', 'Revoke'] },
+    ],
+  },
+  {
+    id: 'reports',
+    icon: '📈',
+    color: '#06B6D4',
+    title: 'Reports, Sync & Integrations',
+    screens: [
+      { id: 'xls-reports', title: 'XLS Reports (Documents hub filter)', route: '/documents?filter=reports', phase: PHASE1, feature: 'xls-reports',
+        layout: 'documents-hub',
+        modules: ['Report catalogue: officers, PSCs, addresses portfolio-wide', 'Run · schedule weekly (Phase 2)'],
+        components: ['ReportCatalogueTable'],
+        actions: ['Export XLS'] },
+      { id: 'ch-sync-alerts', title: 'CH Sync Discrepancy UI', route: 'inline company dashboard alerts', phase: PHASE1, feature: 'ch-sync',
+        layout: 'inline',
+        modules: ['Alert row on dashboard · resolve workflow · diff view local vs CH'],
+        components: ['DiscrepancyDiffModal'],
+        actions: ['Resolve', 'Sync now'] },
+      { id: 'hmrc-vat', title: 'HMRC VAT Link Flow', route: '/account/hmrc/link', phase: PHASE1, feature: 'firm-account',
+        layout: 'oauth',
+        modules: ['ASA OAuth GOV.UK grant · VAT dates on company dashboard · Remove link action'],
+        components: ['HMRCConnectButton', 'VATDateDisplay'],
+        actions: ['Link to HMRC', 'Remove HMRC link'] },
+      { id: 'idvt', title: 'PSC Identity Verification (ACSP)', route: '/companies/{id}/identity/*', phase: PHASE1, feature: 'psc-identity',
+        layout: 'wizard-full',
+        modules: ['Send BrightChecks request · track status · personal code entry · VS01 where required'],
+        components: ['IDVTStatusTracker'],
+        actions: ['Send identity check', 'Record personal code'] },
+    ],
+  },
+  {
+    id: 'support',
+    icon: '🎧',
+    color: '#94A3B8',
+    title: 'Support & Help',
+    screens: [
+      { id: 'support-hub', title: 'Support Centre', route: '/support', phase: PHASE1, feature: 'support',
+        layout: 'support',
+        modules: ['Phone · email · live chat links', 'Ticket submit with company context', 'SLA badge for subscribers'],
+        components: ['SupportChannelCards', 'TicketForm'],
+        actions: ['Open chat', 'Submit ticket'] },
+      { id: 'guides', title: 'In-App Guides & Tooltips', route: 'contextual overlays', phase: PHASE1, feature: 'guides',
+        layout: 'overlay',
+        modules: ['Step-level ? icons in wizards · GOV.UK links · ECCTA explainers'],
+        components: ['HelpPopover', 'LegalDisclaimerBanner'],
+        actions: ['Learn more'] },
+      { id: 'webinars', title: 'Webinars & Training', route: '/support/webinars', phase: PHASE2, feature: 'webinars',
+        layout: 'support',
+        modules: ['Upcoming sessions · recording library'],
+        components: ['WebinarList'],
+        actions: ['Register'] },
+    ],
+  },
+  {
+    id: 'phase2',
+    icon: '📦',
+    color: '#F43F5E',
+    title: 'Phase 2 & Post-Launch Screens',
+    screens: [
+      { id: 'formation-packages', title: 'Formation Package Tier Picker (Full)', route: '/incorporation/Package', phase: PHASE2, feature: 'new-company',
+        layout: 'incorporation',
+        modules: ['5 tier cards £100–£390 · step-3 à la carte extras · physical fulfilment flags'],
+        components: ['PackageComparisonGrid'],
+        actions: ['Select package'] },
+      { id: 'fulfilment-oms', title: 'Fulfilment Queue (Internal/Ops)', route: '/ops/fulfilment', phase: PHASE2, feature: null,
+        layout: 'admin-table',
+        modules: ['Print/post orders · seals · bound registers · tracking numbers'],
+        components: ['FulfilmentQueue'],
+        actions: ['Mark dispatched'] },
+      { id: 'llp-wizard', title: 'LLP Formation Branch', route: '/incorporation/llp/*', phase: PHASE2, feature: 'new-company',
+        layout: 'incorporation',
+        modules: ['LL IN01 · LL AP · LLPSC forms · separate wizard branch'],
+        components: ['LLPTypeSelector'],
+        actions: ['Form LLP'] },
+      { id: 'sole-trader', title: 'Sole Trader / Non-CH Entity', route: '/import/non-ch', phase: PHASE2, feature: 'sole-trader',
+        layout: 'wizard-modal',
+        modules: ['Manual entity form · VAT dates · no CH filing'],
+        components: ['NonCHEntityForm'],
+        actions: ['Add to portfolio'] },
+      { id: 'client-portal', title: 'Client Portal (End Client View)', route: '/portal/{token}', phase: PHASE1, feature: 'firm-account',
+        layout: 'portal',
+        modules: ['View-only company docs · e-sign minutes · branded header'],
+        components: ['ClientPortalShell'],
+        actions: ['Sign document', 'View registers'] },
+      { id: 'cap-table', title: 'Live Cap Table Dashboard', route: '/companies/{id}/cap-table', phase: PHASE2, feature: 'share-allotment',
+        layout: 'company-tab',
+        modules: ['Ownership pie chart · transaction timeline · CSV export'],
+        components: ['CapTableViz'],
+        actions: ['Export CSV'] },
+      { id: 'ct600', title: 'Corporation Tax Filing', route: '/companies/{id}/file/ct600', phase: PHASE2, feature: null,
+        layout: 'wizard-full',
+        modules: ['CT600 with accounts · HMRC ASA · subscription + presenter'],
+        components: ['CT600Wizard'],
+        actions: ['File with HMRC'] },
+    ],
+  },
+  {
+    id: 'sitemap',
+    icon: '🗺️',
+    color: '#38BDF8',
+    title: 'Complete Route Map',
+    screens: [],
+  },
+];
+
+function wfAppShell(activeRail, extraHeader) {
+  return `<div class="wf-body">
+    <div class="wf-icon-rail">${GLOBAL_SHELL.iconRail.map(n =>
+      `<span class="${n.label === activeRail ? 'on' : ''}" title="${n.label}"></span>`
+    ).join('')}</div>
+    <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+      <div class="wf-cmdk">⌘K Search anything… · + Create · 🔔 · Avatar ▾</div>
+      ${extraHeader || ''}
+    </div>
+  </div>`;
+}
+
+function renderWireframe(screen) {
+  const L = screen.layout;
+  if (L === 'auth') return `<div class="wf" style="max-width:320px;margin:0 auto">
+    <div class="wf-main" style="padding:24px">
+      <div class="wf-title">${screen.title}</div>
+      <div class="wf-field"></div><div class="wf-field"></div>
+      <div class="wf-btn-row"><span class="wf-btn wf-btn-primary">Sign in</span></div>
+    </div></div>`;
+
+  if (L === 'command-centre') return `<div class="wf">${wfAppShell('Command Centre', `
+    <div class="wf-main"><div class="wf-title">Command Centre</div>
+      <div class="wf-panel"><div class="wf-panel-label">Action queue — 3 need you today</div></div>
+      <div class="wf-grid-2"><div class="wf-panel"><div class="wf-panel-label">Deadline timeline</div>
+        <div class="wf-timeline"><div class="wf-timeline-item">CS · 34K LTD · 23d</div><div class="wf-timeline-item">Accounts · ACME · 8mo</div></div></div>
+      <div class="wf-panel"><div class="wf-panel-label">Compliance heatmap</div>▦▦▦ RAG grid</div></div>
+    </div>`)}</div>`;
+
+  if (L === 'portfolio') return `<div class="wf">${wfAppShell('Companies', `
+    <div class="wf-main"><div class="wf-title">Companies</div>
+      <div class="wf-field" style="width:50%"></div>
+      <table class="wf-table"><tr><th>Company</th><th>Next</th><th>RAG</th></tr>
+      <tr><td>34K LTD</td><td>CS</td><td>●</td></tr></table></div>`)}</div>`;
+
+  if (L === 'company-hub') return `<div class="wf">${wfAppShell('Companies', `
+    <div class="wf-body"><div class="wf-main" style="flex:1"><div class="wf-title">34K LTD · 11995107</div>
+      <div class="wf-tabs"><span class="wf-tab active">Overview</span><span class="wf-tab">People</span><span class="wf-tab">Cap table</span><span class="wf-tab">Compliance</span><span class="wf-tab">Files</span></div>
+      <div class="wf-panel"><div class="wf-panel-label">Unified deadline timeline + activity feed</div></div>
+      <div class="wf-panel"><div class="wf-panel-label">${screen.title}</div></div></div>
+    <div class="wf-rail-right"><div class="wf-panel-label">Do next</div><span class="wf-btn wf-btn-primary">File CS</span>
+      <div style="margin-top:8px;font-size:8px;color:var(--text3)">Smart single CTA</div></div></div>`)}</div>`;
+
+  if (L === 'slide-flow') return `<div class="wf">${wfAppShell('Companies', `
+    <div class="wf-main" style="opacity:0.5"><div class="wf-title">Companies (dimmed)</div></div>
+    <div style="position:absolute;right:0;top:28px;bottom:0;width:55%;background:var(--bg2);border-left:2px solid var(--border2);padding:12px">
+      <div class="wf-title">Import company</div>
+      <div class="wf-stepper">${[1,2,3,4,5,6].map(i=>`<span class="wf-step${i===1?' active':''}">${i}</span>`).join('')}</div>
+      <div class="wf-panel">Search + CH toggle</div>
+      <span class="wf-btn wf-btn-primary">Continue</span></div>`)}</div>`;
+
+  if (L === 'formation-flow') return `<div class="wf">${wfAppShell('Companies', `
+    <div class="wf-main"><div class="wf-stepper" style="margin-bottom:10px">${['Type','Package','Details','People','Review','Pay'].map((s,i)=>
+      `<span class="wf-step${i===0?' active':''}" style="width:auto;padding:0 6px;border-radius:4px;font-size:7px">${s}</span>`).join('')}</div>
+      <div class="wf-grid-2"><div class="wf-panel">Package comparison matrix</div><div class="wf-panel">Company type + name</div></div>
+      <div style="margin-top:8px;padding:8px;border-top:1px solid var(--border);font-size:8px">Sticky footer: Total £100 + VAT · Continue</div></div>`)}</div>`;
+
+  if (L === 'filing-split') return `<div class="wf">${wfAppShell('Companies', `
+    <div class="wf-main"><div class="wf-title">${screen.title}</div>
+      <div class="wf-split"><div class="wf-panel"><div class="wf-panel-label">Form</div></div>
+      <div class="wf-panel"><div class="wf-panel-label">CH payload preview</div></div></div>
+      <div class="wf-btn-row"><span class="wf-btn wf-btn-secondary">Back</span><span class="wf-btn wf-btn-primary">Submit</span></div></div>`)}</div>`;
+
+  if (L === 'documents-hub') return `<div class="wf">${wfAppShell('Documents', `
+    <div class="wf-main"><div class="wf-title">Documents</div>
+      <div class="wf-tabs"><span class="wf-tab">All</span><span class="wf-tab active">Library</span><span class="wf-tab">Templates</span><span class="wf-tab">Reports</span></div>
+      <div class="wf-grid-2"><div class="wf-panel">Smart folders</div><div class="wf-panel">Search + upload</div></div></div>`)}</div>`;
+
+  if (L === 'settings-hub') return `<div class="wf">${wfAppShell('Settings', `
+    <div class="wf-body"><div class="wf-sidebar" style="width:22%">
+      ${['Firm','Team','Billing','Integrations','You'].map((s,i)=>`<div class="wf-sidebar-item${i===0?' active':''}">${s}</div>`).join('')}
+    </div><div class="wf-main"><div class="wf-title">${screen.title}</div><div class="wf-panel">Section forms — not 13-button action list</div></div></div>`)}</div>`;
+
+  if (L === 'company-tab' || L === 'company-list' || L === 'company-dashboard') return renderWireframe({ ...screen, layout: 'company-hub' });
+  if (L === 'wizard-modal' || L === 'incorporation' || L === 'documents-3tab' || L === 'account-table' || L === 'profile-sidebar' || L === 'wizard-full')
+    return renderWireframe({ ...screen, layout: screen.layout === 'incorporation' ? 'formation-flow' : screen.layout === 'wizard-modal' ? 'slide-flow' : screen.layout === 'documents-3tab' ? 'documents-hub' : screen.layout === 'account-table' || screen.layout === 'profile-sidebar' ? 'settings-hub' : 'filing-split' });
+
+  return `<div class="wf">${wfAppShell('Command Centre', `<div class="wf-main"><div class="wf-title">${screen.title}</div><div class="wf-panel">${screen.route}</div></div>`)}</div>`;
+}
+
+function renderScreen(screen) {
+  const phaseBadge = screen.phase === PHASE1
+    ? '<span class="badge badge-phase1">Phase 1</span>'
+    : '<span class="badge badge-phase2">Phase 2</span>';
+  const modList = (screen.modules || []).map(m => `<li>${m}</li>`).join('');
+  const compList = (screen.components || []).map(c => `<li>${c}</li>`).join('');
+  const actList = (screen.actions || []).map(a => `<li>${a}</li>`).join('');
+  const featLink = screen.feature
+    ? `<div class="feature-ref">→ Feature guide: <a href="index.html" onclick="event.preventDefault();alert('Open index.html and search: ${screen.feature}')">${screen.feature}</a></div>`
+    : '';
+  return `<article class="screen-card" id="screen-${screen.id}" data-search="${(screen.title + screen.route + (screen.modules||[]).join(' ')).toLowerCase()}">
+    <div class="screen-header">
+      <h3>${screen.title}</h3>
+      <div class="screen-meta">${phaseBadge}<code>${screen.route}</code></div>
+    </div>
+    <div class="screen-body">
+      <div class="screen-wireframe">${renderWireframe(screen)}</div>
+      <div class="screen-spec">
+        ${modList ? `<h4>Modules & placement</h4><ul>${modList}</ul>` : ''}
+        ${compList ? `<h4>React components</h4><ul>${compList}</ul>` : ''}
+        ${actList ? `<h4>Primary actions</h4><ul>${actList}</ul>` : ''}
+        ${featLink}
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderUXVision() {
+  const principles = DESIGN.principles.map(p =>
+    `<div class="principle"><h4>${p.title}</h4><p>${p.desc}</p></div>`
+  ).join('');
+  const compareRows = UX_COMPARE.map(c =>
+    `<div class="compare-col"><h4>${c.area}</h4><ul><li><strong>Inform Direct:</strong> ${c.them}</li><li><strong>Us:</strong> ${c.us}</li></ul></div>`
+  ).join('');
+  return `<section class="section" id="ux-vision">
+    <div class="section-head"><div class="section-icon" style="background:var(--bg4)">✨</div><h2>UX Vision — Better, Not a Clone</h2><span>Feature parity · smarter flows</span></div>
+    <div class="info-box"><strong>${DESIGN.note}</strong> This blueprint covers every capability from our 49 feature cards — same legal/filing scope as Inform Direct — with a modern product UX. Visual branding (colours, fonts, illustration) is a later decision.</div>
+    <h4 style="color:var(--text3);font-size:11px;text-transform:uppercase;margin-bottom:10px">Design principles</h4>
+    <div class="principle-grid">${principles}</div>
+    <h4 style="color:var(--text3);font-size:11px;text-transform:uppercase;margin:20px 0 10px">Inform Direct vs our approach</h4>
+    <div class="compare-grid">${compareRows}</div>
+  </section>
+
+  <section class="section" id="global-shell">
+    <div class="section-head"><div class="section-icon" style="background:var(--bg4)">🧭</div><h2>Global App Shell</h2><span>Icon rail + ⌘K — not 7-button top bar</span></div>
+    <div class="screen-card"><div class="screen-body" style="grid-template-columns:1fr"><div class="screen-wireframe" style="border-right:none">
+      ${wfAppShell('Command Centre', '<div class="wf-main"><div class="wf-panel-label">Page content area</div></div>')}
+    </div></div></div>
+    <table class="route-table"><thead><tr><th>Icon rail zone</th><th>Route</th><th>Replaces (Inform Direct)</th><th>Feature card</th></tr></thead><tbody>
+      ${GLOBAL_SHELL.iconRail.map(n => `<tr><td><strong>${n.icon} ${n.label}</strong><br><span style="font-size:11px;color:var(--text3)">${n.desc}</span></td><td><code>${n.route}</code></td><td style="font-size:12px;color:var(--text3)">${n.label === 'Command Centre' ? 'Your Portfolio table' : n.label === 'Settings' ? 'Account + Your Profile tabs' : n.label === 'Documents' ? 'Documents & Reports top nav' : '—'}</td><td>${n.feature || '—'}</td></tr>`).join('')}
+    </tbody></table>
+    <p style="margin-top:12px;font-size:12px;color:var(--text2)"><strong>Header:</strong> ${GLOBAL_SHELL.headerContext}</p>
+    <h4 style="color:var(--text3);font-size:11px;text-transform:uppercase;margin:20px 0 10px">Global widgets</h4>
+    <ul style="list-style:none;color:var(--text2);font-size:13px">${GLOBAL_SHELL.globalWidgets.map(w => `<li style="padding:4px 0">• ${w}</li>`).join('')}</ul>
+  </section>`;
+}
+
+function renderSitemap() {
+  return `<section class="section" id="sitemap">
+    <div class="section-head"><div class="section-icon" style="background:var(--accent-dim)">🗺️</div><h2>Complete Route Map</h2><span>${SCREEN_GROUPS.reduce((n,g)=>n+g.screens.length,0)} screens documented</span></div>
+    <pre class="sitemap">/
+├── /login · /register · /login/mfa · /invitations/{token}
+├── /                              ← Command Centre (home) — NOT /portfolio table
+├── /companies                     ← Browse all entities
+├── /work                          ← In-progress drafts & approvals
+├── /import?step=1..6              ← Slide-over (not SETUP modal)
+├── /form/*                        ← Formation horizontal stepper
+├── /documents                     ← Smart folders hub (Library · Templates · Reports as filters)
+├── /settings                      ← Unified settings hub
+│   ├── /firm · /team · /billing · /integrations · /you
+│   └── (maps all Inform Direct Account + Profile content)
+├── /companies/{id}                ← Company Hub (scroll + pill nav)
+│   ├── #overview · #people · #cap-table · #compliance · #files · #activity
+│   ├── /file/* — split-pane wizards with CH preview
+│   └── /officers/* · /psc/* · /shares/* · /address/*
+├── /checkout/* · /portal/{token} · /support
+└── ⌘K command palette — global overlay from any screen
+
+All 49 feature cards covered · same filing scope · better UX patterns</pre>
+    <table class="route-table"><thead><tr><th>Area</th><th>Screens</th><th>Phase 1 count</th></tr></thead><tbody>
+      ${SCREEN_GROUPS.filter(g => g.screens.length).map(g => {
+        const p1 = g.screens.filter(s => s.phase === PHASE1).length;
+        return `<tr><td>${g.icon} ${g.title}</td><td>${g.screens.length}</td><td>${p1}</td></tr>`;
+      }).join('')}
+    </tbody></table>
+  </section>`;
+}
+
+function renderSidebar() {
+  let html = '<div class="sidebar-title">UI Blueprint</div>';
+  html += '<a class="side-link" href="#ux-vision">✨ UX vision</a>';
+  html += '<a class="side-link" href="#global-shell">🧭 App shell</a>';
+  SCREEN_GROUPS.forEach(g => {
+    if (!g.screens.length && g.id !== 'ux-vision') return;
+    if (g.id === 'sitemap') {
+      html += `<a class="side-link" href="#sitemap">🗺️ Route map</a>`;
+      return;
+    }
+    if (g.id === 'ux-vision') return;
+    html += `<div class="sidebar-title">${g.title}</div>`;
+    g.screens.forEach(s => {
+      html += `<a class="side-link" href="#screen-${s.id}">${s.title}<span class="count">${s.phase === PHASE1 ? 'P1' : 'P2'}</span></a>`;
+    });
+  });
+  document.getElementById('sidebar').innerHTML = html;
+}
+
+function renderMain() {
+  const totalScreens = SCREEN_GROUPS.reduce((n, g) => n + g.screens.length, 0);
+  const p1Screens = SCREEN_GROUPS.reduce((n, g) => n + g.screens.filter(s => s.phase === PHASE1).length, 0);
+  let html = `<div class="hero">
+    <h1>Frontend <em>UX Blueprint</em></h1>
+    <p>Better than Inform Direct — not a clone. Every capability from our <a href="index.html">49 feature cards</a> is covered, but navigation, company workspace, and filing flows are reimagined: Command Centre home, ⌘K-first, Company Hub instead of tab sprawl, split-pane filing previews, unified Settings. <strong>Colours and visual branding are deferred.</strong></p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">${totalScreens}</div><div class="stat-lbl">Screens</div></div>
+      <div class="stat"><div class="stat-num">${p1Screens}</div><div class="stat-lbl">Phase 1</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-lbl">Nav zones</div></div>
+      <div class="stat"><div class="stat-num">⌘K</div><div class="stat-lbl">Command palette</div></div>
+      <div class="stat"><div class="stat-num">49</div><div class="stat-lbl">Features covered</div></div>
+    </div>
+  </div>`;
+
+  html += renderUXVision();
+
+  SCREEN_GROUPS.forEach(g => {
+    if (g.id === 'ux-vision' || g.id === 'sitemap') return;
+    html += `<section class="section" id="${g.id}">
+      <div class="section-head"><div class="section-icon" style="background:${g.color}22">${g.icon}</div>
+        <h2>${g.title}</h2><span>${g.screens.length} screen${g.screens.length !== 1 ? 's' : ''}</span></div>`;
+    g.screens.forEach(s => { html += renderScreen(s); });
+    html += '</section>';
+  });
+
+  html += renderSitemap();
+  document.getElementById('main').innerHTML = html;
+}
+
+function filterScreens() {
+  const q = document.getElementById('globalSearch').value.toLowerCase().trim();
+  document.querySelectorAll('.screen-card').forEach(card => {
+    card.classList.toggle('hidden', q && !card.dataset.search.includes(q));
+  });
+  document.querySelectorAll('.section').forEach(sec => {
+    if (sec.id === 'ux-vision' || sec.id === 'global-shell' || sec.id === 'sitemap') return;
+    const visible = sec.querySelectorAll('.screen-card:not(.hidden)').length;
+    sec.classList.toggle('hidden', q && visible === 0);
+  });
+}
+
+renderSidebar();
+renderMain();
+</script>
+</body>
+</html>

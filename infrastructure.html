@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK CoSec Platform — Infrastructure Cost</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0A0E14; --bg2: #121820; --bg3: #1A2230;
+  --border: #2D3A4D; --text: #E8EDF4; --text2: #94A3B8; --text3: #64748B;
+  --accent: #38BDF8; --accent-dim: #0C4A6E;
+  --green: #34D399; --green-dim: #064E3B;
+  --amber: #FBBF24; --amber-dim: #78350F;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  height: 56px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.5rem 0 1.25rem; position: sticky; top: 0; z-index: 200;
+}
+.header-brand { display: flex; align-items: center; gap: 8px; }
+.logo-icon {
+  width: 28px; height: 28px; background: var(--green-dim); border-radius: 7px;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.logo-text { font-size: 13px; font-weight: 700; }
+.logo-badge {
+  font-size: 9px; font-weight: 600; background: var(--green-dim); color: var(--green);
+  border: 1px solid var(--green); padding: 2px 6px; border-radius: 10px;
+}
+.nav-links { display: flex; gap: 16px; font-size: 13px; }
+.nav-links a { color: var(--text2); }
+.nav-links a:hover { color: var(--accent); text-decoration: none; }
+
+.page { max-width: 960px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+
+.hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+.hero h1 em { color: var(--green); font-style: normal; }
+.hero p { color: var(--text2); font-size: 14px; }
+
+.scenario-bar {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  margin: 1.25rem 0; padding: 14px 16px;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.scenario-btn {
+  font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg3); color: var(--text2); cursor: pointer;
+}
+.scenario-btn.active { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+.scenario-note { font-size: 12px; color: var(--text3); margin-left: auto; }
+
+.stats-row {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px; margin: 1.25rem 0;
+}
+.stat-box {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px; text-align: center;
+}
+.stat-box.hero-stat { border-color: var(--green); background: var(--green-dim); }
+.stat-num { font-size: 22px; font-weight: 700; color: var(--green); }
+.stat-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; }
+
+.note-box {
+  background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--green);
+  border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: var(--text2); margin-bottom: 1.25rem;
+}
+.skip-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.skip-tag {
+  font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px;
+  background: #3D1A12; color: #F78166; border: 1px solid #F78166;
+}
+
+.section { margin-bottom: 1.75rem; }
+.section h2 { font-size: 16px; font-weight: 700; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+.cost-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+.cost-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cost-table th { background: var(--bg3); padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.cost-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text2); }
+.cost-table tr:last-child td { border-bottom: none; }
+.cost-table .total td { background: var(--green-dim); color: var(--green); font-weight: 700; }
+.item-name { font-weight: 600; color: var(--text); }
+.item-sub { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+.cost-val { font-family: var(--mono); font-weight: 600; color: var(--green); }
+.arch-box {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem; font-family: var(--mono); font-size: 11px; color: var(--text2);
+  line-height: 1.7; white-space: pre; overflow-x: auto;
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-brand">
+    <div class="logo-icon">💷</div>
+    <span class="logo-text">UK CoSec Platform</span>
+    <span class="logo-badge">Infra</span>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">← Feature Guide</a>
+    <a href="blueprint.html">Build Plan</a>
+  </nav>
+</header>
+
+<div class="page" id="app"></div>
+
+<script>
+const SCENARIOS = {
+  launch: {
+    label: 'Launch (0–200 cos)',
+    note: 'Beta · single EC2 · prove product before scaling spend',
+    companies: 150,
+    items: [
+      { name: 'EC2 t4g.small (app + workers)', sub: 'Node API · PDF · CH sync cron on same box', cost: 18 },
+      { name: 'RDS PostgreSQL db.t4g.micro', sub: 'Single-AZ · eu-west-2 · no Multi-AZ yet', cost: 13 },
+      { name: 'S3 document storage', sub: '~15 GB · Standard class', cost: 1 },
+      { name: 'Route 53', sub: 'Hosted zone', cost: 1 },
+      { name: 'Cloudflare', sub: 'Free SSL + CDN in front of EC2 — no ALB', cost: 0 },
+      { name: 'Cognito', sub: 'Under 50k MAU free tier · TOTP MFA', cost: 0 },
+      { name: 'Amazon SES', sub: '~2k emails/mo', cost: 1 },
+      { name: 'Lambda', sub: 'Defer — run jobs on EC2 via node-cron', cost: 0 },
+      { name: 'GetAddress.io', sub: '£10/mo flat — 500 lookups', cost: 10 },
+      { name: 'GitHub Free + domain', sub: 'CI via Actions free tier', cost: 2 },
+      { name: 'Companies House APIs', sub: 'Free · software authorisation is eng time only', cost: 0 },
+    ],
+    skips: ['NAT Gateway', 'Multi-AZ RDS', 'ALB', 'WAF', 'ElastiCache', 'ECS Fargate', 'Freshdesk', 'SMS MFA'],
+  },
+  k1000: {
+    label: '1,000 companies',
+    note: 'Still lean — upgrade DB + app server, still no NAT/ALB/WAF',
+    companies: 1000,
+    items: [
+      { name: 'EC2 t4g.medium (app + workers)', sub: '2 vCPU · 4 GB · nightly sync 1k cos', cost: 32 },
+      { name: 'RDS PostgreSQL db.t4g.small', sub: 'Single-AZ · ~5 GB data · upgrade at 2.5k cos', cost: 26 },
+      { name: 'S3 document storage', sub: '~70 GB · 70 MB avg/co', cost: 2 },
+      { name: 'Route 53 + Cloudflare', sub: 'DNS + free CDN/SSL', cost: 1 },
+      { name: 'Cognito', sub: '~140 MAU · still free', cost: 0 },
+      { name: 'Amazon SES', sub: '~6k emails/mo · reminders + confirms', cost: 2 },
+      { name: 'Lambda (optional)', sub: 'Heavy PDF bursts only · else EC2 cron', cost: 6 },
+      { name: 'GetAddress.io', sub: '£18/mo plan — 2k lookups', cost: 18 },
+      { name: 'IDVT checks', sub: '~55/mo · pass cost to ACSP subscribers', cost: 47 },
+      { name: 'CloudWatch logs', sub: 'Basic retention 14d', cost: 6 },
+      { name: 'GitHub + domain', sub: 'Team plan if needed', cost: 12 },
+      { name: 'Companies House APIs', sub: '30k sync calls/mo · free', cost: 0 },
+    ],
+    skips: ['NAT Gateway (−£42/mo)', 'Multi-AZ RDS (−£60/mo)', 'ALB (−£24/mo)', 'WAF', 'ElastiCache', 'ECS cluster', 'Paid support desk'],
+  },
+};
+
+let active = 'launch';
+
+function total(s) {
+  return SCENARIOS[s].items.reduce((n, i) => n + i.cost, 0);
+}
+
+function render() {
+  const sc = SCENARIOS[active];
+  const t = total(active);
+  const perCo = t / sc.companies;
+
+  document.getElementById('app').innerHTML = `
+    <div class="hero">
+      <h1><em>Infrastructure</em> Cost</h1>
+      <p>Lean AWS stack for building an Inform Direct competitor without enterprise overhead. UK data in <strong>eu-west-2</strong>. CH APIs are free. Upgrade to Multi-AZ / ALB / Fargate only when revenue justifies it.</p>
+    </div>
+
+    <div class="scenario-bar">
+      ${Object.entries(SCENARIOS).map(([k, v]) =>
+        `<button type="button" class="scenario-btn${k === active ? ' active' : ''}" data-s="${k}">${v.label}</button>`
+      ).join('')}
+      <span class="scenario-note">${sc.note}</span>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box hero-stat"><div class="stat-num">£${t}</div><div class="stat-lbl">Per month</div></div>
+      <div class="stat-box"><div class="stat-num">£${(t * 12).toLocaleString()}</div><div class="stat-lbl">Per year</div></div>
+      <div class="stat-box"><div class="stat-num">£${perCo.toFixed(2)}</div><div class="stat-lbl">Per company / mo</div></div>
+      <div class="stat-box"><div class="stat-num">${sc.companies.toLocaleString()}</div><div class="stat-lbl">Companies</div></div>
+    </div>
+
+    <div class="note-box">
+      <strong>What we skip to save ~£150–200/mo vs typical AWS setup:</strong>
+      <div class="skip-list">${sc.skips.map(s => `<span class="skip-tag">${s}</span>`).join('')}</div>
+      <p style="margin-top:10px">App + background jobs on one EC2 instance. Cloudflare handles TLS and caching — no ALB. Jobs via node-cron/BullMQ on-box (SQLite queue or Postgres SKIP LOCKED) instead of ElastiCache + separate workers.</p>
+    </div>
+
+    <section class="section">
+      <h2>Line items — ${sc.label}</h2>
+      <div class="cost-table-wrap">
+        <table class="cost-table">
+          <thead><tr><th>Service</th><th>Monthly</th></tr></thead>
+          <tbody>
+            ${sc.items.map(i => `<tr>
+              <td><div class="item-name">${i.name}</div><div class="item-sub">${i.sub}</div></td>
+              <td class="cost-val">${i.cost === 0 ? 'Free' : '£' + i.cost}</td>
+            </tr>`).join('')}
+            <tr class="total"><td>Total infrastructure</td><td class="cost-val">£${t}/mo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Architecture</h2>
+      <div class="arch-box">Users → Cloudflare (free SSL/CDN) → EC2 t4g (Node API + React static + cron workers)
+                                              │
+                                    PostgreSQL RDS (single-AZ)
+                                              │
+                                    S3 (documents · iXBRL uploads)
+                                              │
+                         Cognito · SES · GetAddress.io · Stripe · CH APIs (free)</div>
+    </section>
+
+    <section class="section">
+      <h2>When to upgrade (revenue-gated)</h2>
+      <div class="cost-table-wrap">
+        <table class="cost-table">
+          <thead><tr><th>Trigger</th><th>Add</th><th>Extra cost</th></tr></thead>
+          <tbody>
+            <tr><td>2,500+ companies or 99.9% SLA needed</td><td>RDS Multi-AZ + db.t4g.medium</td><td class="cost-val">+£60/mo</td></tr>
+            <tr><td>High traffic / multiple app instances</td><td>ALB + 2× Fargate tasks</td><td class="cost-val">+£55/mo</td></tr>
+            <tr><td>Job queue isolation</td><td>ElastiCache Redis micro</td><td class="cost-val">+£14/mo</td></tr>
+            <tr><td>Compliance / DDoS</td><td>AWS WAF</td><td class="cost-val">+£12/mo</td></tr>
+            <tr><td>Private subnet egress</td><td>NAT Gateway — avoid; use VPC endpoints instead</td><td class="cost-val">+£35/mo if needed</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--text3);margin-top:12px">Stripe is pay-per-transaction (not infra). IDVT cost at 1k cos is mostly recoverable from ACSP subscription fees. iXBRL is upload-only — no Corefiling (£200+/mo) at launch.</p>
+    </section>
+  `;
+
+  document.querySelectorAll('.scenario-btn').forEach(btn => {
+    btn.onclick = () => { active = btn.dataset.s; render(); };
+  });
+}
+
+render();
+</script>
+</body>
+</html>
